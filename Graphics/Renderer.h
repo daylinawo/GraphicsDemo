@@ -7,7 +7,6 @@
 
 class Renderer
 {
-public:
 
 public:
 

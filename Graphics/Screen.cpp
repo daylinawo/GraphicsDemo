@@ -15,28 +15,12 @@ Screen::Screen()
 {
 	m_window = nullptr;
 	m_context = nullptr;
-	m_isRunning = false;
-
-	std::vector<std::string> settings;
-	std::vector<std::string> strBuffer;
-
-	Utility::GetFileContents("Assets/Files/settings.ini", settings);
-
-	if (!settings.empty())
-	{
-		for (auto it = settings.begin(); it != settings.end(); it++)
-		{
-			strBuffer.clear();
-			Utility::ParseString((*it), '=', strBuffer);
-
-			m_settings.insert({ strBuffer[0], strBuffer[1] });
-		}
-	}
-
 }
 
-bool Screen::Initialize()
+bool Screen::Initialize(const std::string& windowName, int width, int height,
+						bool fullscreen, bool coreMode, bool openGLScreen)
 {	
+
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) == -1)
 	{
 		std::cout << "Could not initialize SDL" << std::endl;
@@ -53,16 +37,15 @@ bool Screen::Initialize()
 	//enable double buffering
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-	int mode = (std::stoi(m_settings["CoreMode"])) ? (int)SDL_GL_CONTEXT_PROFILE_CORE : (int)SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
 
 	//set a compatibility OpenGL context
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, mode);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, coreMode);
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
 
-	if (!SetupWindow())
+	if (!SetupWindow(windowName, width, height, fullscreen, openGLScreen))
 	{
 		return false;
 	}
@@ -72,13 +55,14 @@ bool Screen::Initialize()
 }
 
 
-bool Screen::SetupWindow()
+bool Screen::SetupWindow(const std::string& windowTitle, int width, 
+						 int height, bool fullscreen, bool openGLScreen)
 {
 
 	Uint32 screenFlag = (std::stoi(m_settings["FullScreen"])) ? SDL_WINDOW_FULLSCREEN : 0;
 	screenFlag |= (std::stoi(m_settings["OpenGLScreen"])) ? SDL_WINDOW_OPENGL : 0;
 
-	m_window = SDL_CreateWindow(m_settings["WindowTitle"].c_str(),
+	m_window = SDL_CreateWindow(windowTitle,
 								SDL_WINDOWPOS_CENTERED,
 								SDL_WINDOWPOS_CENTERED,
 								std::stoi(m_settings["ScreenWidth"]), 
@@ -99,8 +83,6 @@ bool Screen::SetupWindow()
 		return false;
 	}
 
-	m_isRunning = true;
-
 	return true;
 }
 
@@ -116,12 +98,7 @@ void Screen::Shutdown()
 	SDL_Quit();
 }
 
-bool& Screen::IsRunning()
+void Screen::SwapBuffer()
 {
-	return m_isRunning;
-}
-
-SDL_Window* Screen::GetWindow()
-{
-	return m_window;
+	SDL_GL_SwapWindow(m_window);
 }

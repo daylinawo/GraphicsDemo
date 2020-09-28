@@ -71,7 +71,8 @@ void Renderer::Draw()
 	glClear(GL_COLOR_BUFFER_BIT);
 	m_quad2->Draw();
 	m_quad1->Draw();
-	SDL_GL_SwapWindow(Screen::Instance()->GetWindow());
+
+	Screen::Instance()->SwapBuffer();
 }
 
 
