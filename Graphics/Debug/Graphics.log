@@ -1,2 +1,7 @@
-﻿  Renderer.cpp
+﻿  Main.cpp
+  Quad.cpp
+  Renderer.cpp
+  Screen.cpp
+  Generating Code...
+  glad.c
   Graphics.vcxproj -> C:\Users\Student.LON-CL7-00.000\Desktop\GraphicsDemo\Debug\Graphics.exe

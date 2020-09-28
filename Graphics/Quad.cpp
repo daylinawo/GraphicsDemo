@@ -1,6 +1,5 @@
 #include "Quad.h"
-#include <Windows.h>
-#include <gl/GL.h>
+#include "glad.h"
 
 Quad::Quad(float xPos, float yPos, float width, 
 		   float height, float r, float g, float b)

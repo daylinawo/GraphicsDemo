@@ -1,6 +1,7 @@
 #include "Screen.h"
-#include <iostream>
 #include "Utility.h"
+
+#include <iostream>
 #include <vector>
 #include <map>
 
@@ -66,6 +67,7 @@ bool Screen::Initialize()
 		return false;
 	}
 
+	gladLoadGL();
 	return true;
 }
 
