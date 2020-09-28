@@ -12,7 +12,7 @@ public:
 
 public:
 
-	Renderer(SDL_Window* window);
+	Renderer();
 	~Renderer();
 
 public:
@@ -22,7 +22,6 @@ public:
 
 private:
 
-	SDL_Window* m_window;
 	Quad* m_quad1;
 	Quad* m_quad2;
 	float m_up;

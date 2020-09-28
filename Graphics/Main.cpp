@@ -1,5 +1,6 @@
 #include "Screen.h"
 #include "Renderer.h"
+#include "Input.h"
 #include <iostream>
 
 float deltaTime = 0.0f;
@@ -8,28 +9,24 @@ int lastTime = SDL_GetTicks();
 int main(int argc, char* args[])
 {
 
-	Screen screen;
-	Renderer* renderer = nullptr;;
+	Screen::Instance()->Initialize();
+	Renderer* renderer = new Renderer();
 
-	if (screen.Initialize())
-	{
-		renderer = new Renderer(screen.GetWindow());
-	}
-
-	while (screen.IsRunning())
+	while (Screen::Instance()->IsRunning())
 	{
 		deltaTime = (SDL_GetTicks() - lastTime) / 1000.0f;
 		lastTime = SDL_GetTicks();
 
-		//deltaTime = (deltaTime < 0.016f) ? 0.016f : deltaTime;
-		std::cout << "DT: " << deltaTime << std::endl;
+		Input::Instance()->Update();
+
+		Screen::Instance()->IsRunning() = !(Input::Instance()->IsXClicked());
 
 		renderer->Update(deltaTime);
 		renderer->Draw();
 
 	}
 
-	screen.Shutdown();
+	Screen::Instance()->Shutdown();
 
 	return 0;
 }

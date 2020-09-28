@@ -10,8 +10,7 @@ class Screen
 {
 public:
 
-	Screen();
-	~Screen();
+	static Screen* Instance();
 
 public:
 
@@ -20,7 +19,7 @@ public:
 
 public:
 
-	bool IsRunning();
+	bool& IsRunning();
 	SDL_Window* GetWindow();
 
 private:
@@ -28,6 +27,13 @@ private:
 	bool SetupWindow();
 
 private:
+
+	Screen();
+	Screen(const Screen&);
+	Screen& operator=(Screen&);
+
+private:
+
 
 	bool m_isRunning;
 	SDL_Window* m_window;

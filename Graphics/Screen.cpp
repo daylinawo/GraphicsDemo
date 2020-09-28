@@ -4,6 +4,12 @@
 #include <vector>
 #include <map>
 
+Screen* Screen::Instance()
+{
+	static Screen* screenObject = new Screen();
+	return screenObject;
+}
+
 Screen::Screen()
 {
 	m_window = nullptr;
@@ -25,6 +31,7 @@ Screen::Screen()
 			m_settings.insert({ strBuffer[0], strBuffer[1] });
 		}
 	}
+
 }
 
 bool Screen::Initialize()
@@ -107,7 +114,7 @@ void Screen::Shutdown()
 	SDL_Quit();
 }
 
-bool Screen::IsRunning()
+bool& Screen::IsRunning()
 {
 	return m_isRunning;
 }
@@ -115,8 +122,4 @@ bool Screen::IsRunning()
 SDL_Window* Screen::GetWindow()
 {
 	return m_window;
-}
-
-Screen::~Screen()
-{
 }
