@@ -6,7 +6,7 @@ Renderer::Renderer(SDL_Window* window)
 {
 	m_window = window;
 
-	m_quad1 = new Quad(0.0f, 0.5f, 0.3f, 0.3f, 1.0f);
+	m_quad1 = new Quad(0.0f, -0.5f, 0.3f, 0.3f, 1.0f);
 	m_quad2 = new Quad(0.0f, 0.0f, 0.8f, 0.8f, 0.0f, 1.0f);
 
 	m_up = 1.0f;

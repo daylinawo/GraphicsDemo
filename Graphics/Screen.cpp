@@ -45,8 +45,10 @@ bool Screen::Initialize()
 	//enable double buffering
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
+	int mode = (std::stoi(m_settings["CoreMode"])) ? (int)SDL_GL_CONTEXT_PROFILE_CORE : (int)SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
+
 	//set a compatibility OpenGL context
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, mode);
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
