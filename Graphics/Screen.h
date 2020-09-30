@@ -13,13 +13,17 @@ public:
 
 public:
 
+	void Shutdown();
 	bool Initialize(const std::string& windowTitle, int width, int height,
 					bool fullscreen = false, bool coreMode = false, bool openGLScreen = true);
-	void Shutdown();
+
+	void ClearBuffer();
+	void SwapBuffer();
 
 public:
 
-	void SwapBuffer();
+	int GetWidth();
+	int GetHeight();
 
 private:
 
@@ -37,7 +41,8 @@ private:
 	SDL_Window* m_window;
 	SDL_GLContext m_context;
 
-	std::map<std::string, std::string> m_settings;
+	int m_width;
+	int m_height;
 
 };
 

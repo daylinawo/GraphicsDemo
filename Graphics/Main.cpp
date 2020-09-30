@@ -30,9 +30,9 @@ int main(int argc, char* args[])
 		}
 	}
 
-	Screen::Instance()->Initialize(m_configs["WindowTitle"], std::stoi(m_configs["Width"]), 
-								   std::stoi(m_configs["Height"]), std::stoi(m_configs["Fullscreen"]),
-								   std::stoi(m_configs["coreMode"]), std::stoi(m_configs["OpenGLScreen"]));
+	Screen::Instance()->Initialize(m_configs["WindowTitle"], std::stoi(m_configs["ScreenWidth"]), 
+								   std::stoi(m_configs["ScreenHeight"]), std::stoi(m_configs["Fullscreen"]),
+								   std::stoi(m_configs["CoreMode"]), std::stoi(m_configs["OpenGLScreen"]));
 
 	Renderer* renderer = new Renderer();
 

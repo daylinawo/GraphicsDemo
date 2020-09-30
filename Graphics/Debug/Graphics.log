@@ -1,8 +1,4 @@
-﻿  Main.cpp
-  Quad.cpp
-  Renderer.cpp
-  Screen.cpp
-C:\Users\Student.LON-CL7-00.000\Desktop\GraphicsDemo\Graphics\Screen.cpp(65,13): error C2664: 'SDL_Window *SDL_CreateWindow(const char *,int,int,int,int,Uint32)': cannot convert argument 1 from 'const std::string' to 'const char *'
-C:\Users\Student.LON-CL7-00.000\Desktop\GraphicsDemo\Graphics\Screen.cpp(65,30): message : No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
-C:\Users\Student.LON-CL7-00.000\Desktop\GraphicsDemo\DevLib\SDL\include\SDL_video.h(514,38): message : see declaration of 'SDL_CreateWindow'
-  Generating Code...
+﻿  Renderer.cpp
+D:\Desktop\GraphicsDemo\Graphics\Renderer.cpp(64,16): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+D:\Desktop\GraphicsDemo\Graphics\Renderer.cpp(65,16): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+  Graphics.vcxproj -> D:\Desktop\GraphicsDemo\Debug\Graphics.exe

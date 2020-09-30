@@ -7,8 +7,14 @@ const float SPEED = 2.5f;
 
 Renderer::Renderer()
 {
-	m_quad1 = new Quad(0.0f, -0.5f, 0.3f, 0.3f, 1.0f);
-	m_quad2 = new Quad(0.0f, 0.0f, 0.8f, 0.8f, 0.0f, 1.0f);
+	float screenWidth = static_cast<float>(Screen::Instance()->GetWidth());
+	float screenHeight = static_cast<float>(Screen::Instance()->GetHeight());
+	float bgWidth = 400.0f;
+	float bgHeight = 300.0f;
+
+	m_quad1 = new Quad(0.0f, 0.0f, 50.0f, 50.0f, 1.0f);
+	m_quad2 = new Quad(screenWidth / 2, screenHeight / 2,
+					   bgWidth, bgHeight, 0.8f, 1.0f);
 
 	m_up = 1.0f;
 	m_right = 1.0f;
@@ -41,7 +47,6 @@ void Renderer::Update(float deltaTime)
 //		m_dirX = m_right;
 //	}
 //
-//
 //	float x = m_quad1->GetX();
 //	float y = m_quad1->GetY();
 //
@@ -56,8 +61,8 @@ void Renderer::Update(float deltaTime)
 //		m_quad1->SetPosition(newXPos, newYPos);
 //	}
 
-	float newXPos = Input::Instance()->GetMousePositionX() / 1280.0f;
-	float newYPos = Input::Instance()->GetMousePositionY() / 1280.0f;
+	float newXPos = Input::Instance()->GetMousePositionX();
+	float newYPos = Input::Instance()->GetMousePositionY();
 
 	std::cout << newXPos << std::endl;
 	std::cout << newYPos << std::endl;
@@ -68,7 +73,8 @@ void Renderer::Update(float deltaTime)
 void Renderer::Draw()
 {
 	//clear the frame buffer
-	glClear(GL_COLOR_BUFFER_BIT);
+	Screen::Instance()->ClearBuffer();
+
 	m_quad2->Draw();
 	m_quad1->Draw();
 
@@ -79,4 +85,5 @@ void Renderer::Draw()
 Renderer::~Renderer()
 {
 	delete m_quad1;
+	delete m_quad2;
 }

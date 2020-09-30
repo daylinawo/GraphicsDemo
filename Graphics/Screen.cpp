@@ -15,6 +15,28 @@ Screen::Screen()
 {
 	m_window = nullptr;
 	m_context = nullptr;
+	m_width = NULL;
+	m_height = NULL;
+}
+
+void Screen::ClearBuffer()
+{
+	glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void Screen::SwapBuffer()
+{
+	SDL_GL_SwapWindow(m_window);
+}
+
+int Screen::GetWidth()
+{
+	return m_width;
+}
+
+int Screen::GetHeight()
+{
+	return m_height;
 }
 
 bool Screen::Initialize(const std::string& windowName, int width, int height,
@@ -23,7 +45,7 @@ bool Screen::Initialize(const std::string& windowName, int width, int height,
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) == -1)
 	{
-		std::cout << "Could not initialize SDL" << std::endl;
+		std::cout << "Could not initialize SDL." << std::endl;
 		return false;
 	}
 
@@ -37,13 +59,14 @@ bool Screen::Initialize(const std::string& windowName, int width, int height,
 	//enable double buffering
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
+	int mode = (coreMode) ? static_cast<int>(SDL_GL_CONTEXT_PROFILE_CORE) :
+							static_cast<int>(SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 
 	//set a compatibility OpenGL context
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, coreMode);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, mode);
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-
 
 	if (!SetupWindow(windowName, width, height, fullscreen, openGLScreen))
 	{
@@ -51,6 +74,11 @@ bool Screen::Initialize(const std::string& windowName, int width, int height,
 	}
 
 	gladLoadGL();
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0.0f, width, height, 0.0f, 0.0f, 1.0f);
+
 	return true;
 }
 
@@ -58,20 +86,18 @@ bool Screen::Initialize(const std::string& windowName, int width, int height,
 bool Screen::SetupWindow(const std::string& windowTitle, int width, 
 						 int height, bool fullscreen, bool openGLScreen)
 {
+	Uint32 screenFlag = (fullscreen) ? SDL_WINDOW_FULLSCREEN : 0;
+	screenFlag |= (openGLScreen) ? SDL_WINDOW_OPENGL : 0;
 
-	Uint32 screenFlag = (std::stoi(m_settings["FullScreen"])) ? SDL_WINDOW_FULLSCREEN : 0;
-	screenFlag |= (std::stoi(m_settings["OpenGLScreen"])) ? SDL_WINDOW_OPENGL : 0;
-
-	m_window = SDL_CreateWindow(windowTitle,
+	m_window = SDL_CreateWindow(windowTitle.c_str(),
 								SDL_WINDOWPOS_CENTERED,
 								SDL_WINDOWPOS_CENTERED,
-								std::stoi(m_settings["ScreenWidth"]), 
-								std::stoi(m_settings["ScreenHeight"]), 
+								width, height, 
 								screenFlag);
 
 	if (!m_window)
 	{
-		std::cout << "Scene window could not be created." << std::endl;
+		std::cout << "Window could not be created." << std::endl;
 		return false;
 	}
 
@@ -79,9 +105,12 @@ bool Screen::SetupWindow(const std::string& windowTitle, int width,
 
 	if (!m_context)
 	{
-		std::cout << "OpenGL context could not be created" << std::endl;
+		std::cout << "OpenGL context could not be created." << std::endl;
 		return false;
 	}
+
+	m_width = width;
+	m_height = height;
 
 	return true;
 }
@@ -96,9 +125,4 @@ void Screen::Shutdown()
 
 	//shut down all SDL sub-systems
 	SDL_Quit();
-}
-
-void Screen::SwapBuffer()
-{
-	SDL_GL_SwapWindow(m_window);
 }
