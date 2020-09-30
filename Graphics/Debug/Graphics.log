@@ -1,4 +1,0 @@
-﻿  Renderer.cpp
-D:\Desktop\GraphicsDemo\Graphics\Renderer.cpp(64,16): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-D:\Desktop\GraphicsDemo\Graphics\Renderer.cpp(65,16): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-  Graphics.vcxproj -> D:\Desktop\GraphicsDemo\Debug\Graphics.exe
