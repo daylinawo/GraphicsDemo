@@ -1,5 +1,6 @@
 #pragma once
 #include "Quad.h"
+#include "BoxCollider.h"
 
 class Square
 {
@@ -13,6 +14,11 @@ public:
 	void Draw();
 	void Update(float deltaTime);
 
+public:
+
+	const BoxCollider& GetCollider() const;
+	void OnCollision();
+
 private:
 
 	float m_up;
@@ -23,6 +29,7 @@ private:
 	float m_dirY;
 
 	Quad* m_quad;
+	BoxCollider m_boxCollider;
 
 };
 

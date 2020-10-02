@@ -49,6 +49,13 @@ void Quad::SetPosition(float x, float y)
 	m_y = y;
 }
 
+void Quad::SetColor(float r, float g, float b)
+{
+	m_colour.r = r;
+	m_colour.g = g;
+	m_colour.b = b;
+}
+
 float Quad::GetX()
 {
 	return m_x;

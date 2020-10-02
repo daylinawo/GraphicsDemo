@@ -39,6 +39,11 @@ bool Input::IsKeyPressed(int keyCode)
 	return keyStates[keyCode];
 }
 
+bool Input::IsMouseClicked(int mouseButton)
+{
+	return m_mouseButton == mouseButton;
+}
+
 int Input::GetMousePositionX()
 {
 	return m_mousePositionX;
@@ -97,6 +102,35 @@ void Input::Update()
 
 				break;
 			}
+
+			case SDL_MOUSEBUTTONUP:
+			{
+				m_isMouseClicked = false;
+				m_mousePositionX = events.motion.x;
+				m_mousePositionY = events.motion.y;
+
+				if (events.button.button == SDL_BUTTON_LEFT)
+				{
+					m_mouseButton = SDL_MOUSE_NONE;
+				}
+
+				break;
+			}
+
+			case SDL_MOUSEBUTTONDOWN:
+			{
+				m_isMouseClicked = true;
+				m_mousePositionX = events.motion.x;
+				m_mousePositionY = events.motion.y;
+
+				if (events.button.button == SDL_BUTTON_LEFT)
+				{
+					m_mouseButton = SDL_BUTTON_LEFT;
+				}
+
+				break;
+			}
+
 		}
 	}
 }

@@ -15,60 +15,44 @@ Square::Square(float xPos, float yPos, int size, float r, float g, float b)
 
 	m_dirX = m_right;
 	m_dirY = m_up;
+
+	m_boxCollider.SetDimension(size, size);
+	m_boxCollider.SetPosition(xPos, yPos);
 }
 
 void Square::Update(float deltaTime)
 {
-	m_dirX = 0.0f;
-	m_dirY = 0.0f;
-	//
-	//	if (Input::Instance()->IsKeyPressed(SDL_SCANCODE_W))
-	//	{
-	//		m_dirY = m_up;
-	//	}
-	//
-	//	else if (Input::Instance()->IsKeyPressed(SDL_SCANCODE_A))
-	//	{
-	//		m_dirX = -m_right;
-	//	}
-	//	
-	//	else if (Input::Instance()->IsKeyPressed(SDL_SCANCODE_S))
-	//	{
-	//		m_dirY = -m_up;
-	//	}	
-	//	
-	//	else if (Input::Instance()->IsKeyPressed(SDL_SCANCODE_D))
-	//	{
-	//		m_dirX = m_right;
-	//	}
-	//
-	//	float x = m_quad1->GetX();
-	//	float y = m_quad1->GetY();
-	//
-		//float newXPos = x + (m_dirX * SPEED * deltaTime);
-		//float newYPos = y + (m_dirY * SPEED * deltaTime);
-	//
-	//	if ((m_dirX == m_right && !(newXPos + m_quad1->GetWidth() > 1.0f)) ||
-	//		(m_dirX == -m_right && !(newXPos - m_quad1->GetWidth() < -1.0f)) ||
-	//		(m_dirY == m_up && !(newYPos + m_quad1->GetWidth() > 1.0f)) || 
-	//		(m_dirY == -m_up && !(newYPos - m_quad1->GetWidth() < -1.0f)))
-	//	{
-	//		m_quad1->SetPosition(newXPos, newYPos);
-	//	}
 
-	m_dirX = Input::Instance()->GetMouseMotionX();
-	m_dirY = Input::Instance()->GetMouseMotionY();
+	if (Input::Instance()->IsMouseClicked(SDL_BUTTON_LEFT))
+	{
+		float mouseXPos = Input::Instance()->GetMousePositionX();
+		float mouseYPos = Input::Instance()->GetMousePositionY();
+		
+		BoxCollider collider;
+		collider.SetDimension(0, 0);
+		collider.SetPosition(mouseXPos, mouseYPos);
 
-	float x = m_quad->GetX();
-	float y = m_quad->GetY();
+		if (m_boxCollider.IsColliding(collider))
+		{
+			OnCollision();
+		}
+	}
 
-	float newXPos = x + (m_dirX * SPEED * deltaTime);
-	float newYPos = y + (m_dirY * SPEED * deltaTime);
+}
 
-	std::cout << "Mouse motion X: " << newXPos << std::endl;
-	std::cout << "Mouse motion Y: " << newYPos << std::endl;
+const BoxCollider& Square::GetCollider() const
+{
+	return m_boxCollider;
+}
 
-	m_quad->SetPosition(newXPos, newYPos);
+void Square::OnCollision()
+{
+	float mouseXPos = Input::Instance()->GetMousePositionX();
+	float mouseYPos = Input::Instance()->GetMousePositionY();
+
+	m_quad->SetColor(0.0f, 0.0f, 0.0f);
+	m_quad->SetPosition(mouseXPos, mouseYPos);
+	m_boxCollider.SetPosition(mouseXPos, mouseYPos);
 }
 
 void Square::Draw()

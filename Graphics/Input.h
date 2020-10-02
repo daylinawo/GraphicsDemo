@@ -1,5 +1,8 @@
 #pragma once
 
+#define SDL_MOUSE_NONE 0
+
+
 #include <SDL.h>
 
 class Input
@@ -17,9 +20,12 @@ public:
 public:
 
 	bool IsWindowClosed();
-	char GetKey();
+	
 	bool IsKeyPressed();
 	bool IsKeyPressed(int keyCode);
+	bool IsMouseClicked(int mouseButton);
+
+	char GetKey();
 	int GetMousePositionX();
 	int GetMousePositionY();	
 	int GetMouseMotionX();
@@ -37,10 +43,13 @@ private:
 
 	bool m_isKeyPressed;
 	bool m_isWindowClosed;
+	bool m_isMouseClicked;
 
 	int m_mousePositionX;
 	int m_mousePositionY;	
 	int m_mouseMotionX;
 	int m_mouseMotionY;
+	int m_mouseButton;
+
 };
 

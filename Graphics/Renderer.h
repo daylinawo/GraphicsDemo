@@ -1,11 +1,10 @@
 #pragma once
-
 #include <SDL.h>
 
 #include "Background.h"
 #include "glad.h"
 #include "Square.h"
-#include <string>
+#include <vector>
 
 class Renderer
 {
@@ -23,6 +22,6 @@ public:
 private:
 
 	Background* m_background;
-	Square* m_square;
+	std::vector<Square*> m_squares;
 };
 

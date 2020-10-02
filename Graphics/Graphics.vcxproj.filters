@@ -92,11 +92,11 @@
     <ClInclude Include="Utility.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="Square.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BoxCollider.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Square.h">
+      <Filter>Header Files\SceneObjects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

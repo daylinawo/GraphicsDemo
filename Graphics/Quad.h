@@ -25,6 +25,7 @@ public:
 public:
 
 	void SetPosition(float x, float y);
+	void SetColor(float r, float g, float b);
 	
 	float GetX();
 	float GetY();
