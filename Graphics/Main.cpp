@@ -43,7 +43,7 @@ int main(int argc, char* args[])
 
 		Input::Instance()->Update();
 
-		isEngineRunning = !(Input::Instance()->IsXClicked());
+		isEngineRunning = !(Input::Instance()->IsWindowClosed());
 
 		renderer->Update(deltaTime);
 		renderer->Draw();

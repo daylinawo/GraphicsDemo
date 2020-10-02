@@ -10,15 +10,17 @@ Input* Input::Instance()
 Input::Input()
 {
 	m_key = ' ';
-	m_isXClicked = false;
+	m_isWindowClosed = false;
 	m_isKeyPressed = false;
 	m_mousePositionX = 0;
 	m_mousePositionY = 0;
+	m_mouseMotionX = 0;
+	m_mouseMotionY = 0;
 }
 
-bool Input::IsXClicked()
+bool Input::IsWindowClosed()
 {
-	return m_isXClicked;
+	return m_isWindowClosed;
 }
 
 char Input::GetKey()
@@ -47,6 +49,16 @@ int Input::GetMousePositionY()
 	return m_mousePositionY;
 }
 
+int Input::GetMouseMotionX()
+{
+	return m_mouseMotionX;
+}
+
+int Input::GetMouseMotionY()
+{
+	return m_mouseMotionY;
+}
+
 void Input::Update()
 {
 	SDL_Event events;
@@ -57,7 +69,7 @@ void Input::Update()
 		{
 			case SDL_QUIT:
 			{
-				m_isXClicked = true;
+				m_isWindowClosed = true;
 				break;
 			}		
 			
@@ -73,11 +85,16 @@ void Input::Update()
 				m_isKeyPressed = false;
 				m_key = SDLK_UNKNOWN;
 				break;
-			}			
+			}	
+
 			case SDL_MOUSEMOTION:
 			{
 				m_mousePositionX = events.motion.x;
 				m_mousePositionY = events.motion.y;
+
+				m_mouseMotionX = events.motion.xrel;
+				m_mouseMotionY = events.motion.yrel;
+
 				break;
 			}
 		}

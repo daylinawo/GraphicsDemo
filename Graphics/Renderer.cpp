@@ -3,7 +3,7 @@
 #include "Input.h"
 #include <iostream>
 
-const float SPEED = 2.5f;
+const float SPEED = 32.5f;
 
 Renderer::Renderer()
 {
@@ -24,8 +24,8 @@ Renderer::Renderer()
 
 void Renderer::Update(float deltaTime)
 {
-//	m_dirX = 0.0f;
-//	m_dirY = 0.0f;
+	m_dirX = 0.0f;
+	m_dirY = 0.0f;
 //
 //	if (Input::Instance()->IsKeyPressed(SDL_SCANCODE_W))
 //	{
@@ -50,8 +50,8 @@ void Renderer::Update(float deltaTime)
 //	float x = m_quad1->GetX();
 //	float y = m_quad1->GetY();
 //
-//	float newXPos = x + (m_dirX * SPEED * deltaTime);
-//	float newYPos = y + (m_dirY * SPEED * deltaTime);
+	//float newXPos = x + (m_dirX * SPEED * deltaTime);
+	//float newYPos = y + (m_dirY * SPEED * deltaTime);
 //
 //	if ((m_dirX == m_right && !(newXPos + m_quad1->GetWidth() > 1.0f)) ||
 //		(m_dirX == -m_right && !(newXPos - m_quad1->GetWidth() < -1.0f)) ||
@@ -61,11 +61,17 @@ void Renderer::Update(float deltaTime)
 //		m_quad1->SetPosition(newXPos, newYPos);
 //	}
 
-	float newXPos = Input::Instance()->GetMousePositionX();
-	float newYPos = Input::Instance()->GetMousePositionY();
+	m_dirX = Input::Instance()->GetMouseMotionX();
+	m_dirY = Input::Instance()->GetMouseMotionY();
 
-	std::cout << newXPos << std::endl;
-	std::cout << newYPos << std::endl;
+	float x = m_quad1->GetX();
+	float y = m_quad1->GetY();
+
+	float newXPos = x + (m_dirX * SPEED * deltaTime);
+	float newYPos = y + (m_dirY * SPEED * deltaTime);
+
+	std::cout << "Mouse motion X: " << newXPos << std::endl;
+	std::cout << "Mouse motion Y: " << newYPos << std::endl;
 
 	m_quad1->SetPosition(newXPos, newYPos);
 }

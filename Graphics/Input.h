@@ -16,12 +16,14 @@ public:
 
 public:
 
-	bool IsXClicked();
+	bool IsWindowClosed();
 	char GetKey();
 	bool IsKeyPressed();
 	bool IsKeyPressed(int keyCode);
 	int GetMousePositionX();
-	int GetMousePositionY();
+	int GetMousePositionY();	
+	int GetMouseMotionX();
+	int GetMouseMotionY();
 
 private:
 
@@ -31,10 +33,14 @@ private:
 
 private:
 
-	bool m_isXClicked;
-	bool m_isKeyPressed;
 	char m_key;
+
+	bool m_isKeyPressed;
+	bool m_isWindowClosed;
+
 	int m_mousePositionX;
-	int m_mousePositionY;
+	int m_mousePositionY;	
+	int m_mouseMotionX;
+	int m_mouseMotionY;
 };
 
