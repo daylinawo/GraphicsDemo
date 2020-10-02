@@ -1,9 +1,11 @@
 #pragma once
 
-#include "glad.h"
 #include <SDL.h>
+
+#include "Background.h"
+#include "glad.h"
+#include "Square.h"
 #include <string>
-#include "Quad.h"
 
 class Renderer
 {
@@ -20,11 +22,7 @@ public:
 
 private:
 
-	Quad* m_quad1;
-	Quad* m_quad2;
-	float m_up;
-	float m_right;
-	float m_dirX;
-	float m_dirY;
+	Background* m_background;
+	Square* m_square;
 };
 

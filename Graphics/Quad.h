@@ -13,7 +13,7 @@ public:
 
 public:
 
-	Quad(float xPos, float yPos, float width, float height, 
+	Quad(float xPos, float yPos, int width, int height, 
 		 float r = 0.0f, float g = 0.0f, float b = 0.0f);
 	~Quad();
 

@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Shapes">
-      <UniqueIdentifier>{485e0e62-6924-457e-95fd-c21eacab1967}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Shapes">
-      <UniqueIdentifier>{bf31f3fc-9a06-4208-8ecb-ccf8f296171e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Core">
       <UniqueIdentifier>{0f0b3fd7-e378-48c8-91ba-6bcf3e002830}</UniqueIdentifier>
     </Filter>
@@ -40,10 +34,16 @@
     <Filter Include="Header Files\Misc">
       <UniqueIdentifier>{2dae3b33-7441-430c-b607-bb4bd8a2e774}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Components">
+      <UniqueIdentifier>{bf31f3fc-9a06-4208-8ecb-ccf8f296171e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Components">
+      <UniqueIdentifier>{485e0e62-6924-457e-95fd-c21eacab1967}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Quad.cpp">
-      <Filter>Source Files\Shapes</Filter>
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files\Core</Filter>
@@ -66,10 +66,16 @@
     <ClCompile Include="glad.c">
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
+    <ClCompile Include="Square.cpp">
+      <Filter>Source Files\SceneObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxCollider.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Quad.h">
-      <Filter>Header Files\Shapes</Filter>
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="Renderer.h">
       <Filter>Header Files\Managers</Filter>
@@ -85,6 +91,12 @@
     </ClInclude>
     <ClInclude Include="Utility.h">
       <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Square.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxCollider.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

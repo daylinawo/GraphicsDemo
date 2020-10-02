@@ -1,8 +1,8 @@
 #include "Quad.h"
 #include "glad.h"
 
-Quad::Quad(float xPos, float yPos, float width, 
-		   float height, float r, float g, float b)
+Quad::Quad(float xPos, float yPos, int width, 
+		   int height, float r, float g, float b)
 {
 	m_x = xPos;
 	m_y = yPos;
