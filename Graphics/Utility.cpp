@@ -1,7 +1,6 @@
 #include "Utility.h"
 #include <fstream>
 
-
 void Utility::ParseString(const std::string& str, char token, std::vector<std::string>& buffer)
 {
 	std::string tempStr;

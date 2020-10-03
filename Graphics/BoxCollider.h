@@ -1,4 +1,7 @@
 #pragma once
+
+#include "Vector.h"
+
 class BoxCollider
 {
 
@@ -17,15 +20,10 @@ private:
 
 private:
 
-	float m_positionX;
-	float m_positionY;
+	Vector<float> m_position;
+	Vector<float> m_dimension;
+	Vector<float> m_max;
+	Vector<float> m_min;
 
-	float m_minX;
-	float m_maxX;	
-	float m_minY;
-	float m_maxY;
-	
-	int m_width;
-	int m_height;
 };
 

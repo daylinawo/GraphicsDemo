@@ -2,31 +2,28 @@
 
 void BoxCollider::SetPosition(float xPos, float yPos)
 {
-	m_positionX = xPos;
-	m_positionY = yPos;
-
+	m_position = { xPos, yPos };
 	CreateBox();
 }
 
 void BoxCollider::SetDimension(int width, int height)
 {
-	m_width = width;
-	m_height = height;
+	m_dimension.x = width;
+	m_dimension.y = height;
 
 	CreateBox();
-
 }
 
 bool BoxCollider::IsColliding(const BoxCollider& secondBox) const
 {
-	return ((m_maxX > secondBox.m_minX && secondBox.m_maxX > m_minX) &&
-			(m_maxY > secondBox.m_minY && secondBox.m_maxY > m_minY));
+	return ((m_max.x > secondBox.m_min.x && secondBox.m_max.x> m_min.x) &&
+			(m_max.y > secondBox.m_min.y && secondBox.m_max.y > m_min.y));
 }
 
 void BoxCollider::CreateBox()
 {
-	m_minX = m_positionX - m_width / 2;;
-	m_maxX = m_positionX + m_width / 2;;
-	m_minY = m_positionY - m_height / 2;;
-	m_maxY = m_positionY + m_height / 2;
+	m_min.x = m_position.x - m_dimension.x / 2;
+	m_max.x = m_position.x + m_dimension.x / 2;
+	m_min.y = m_position.y - m_dimension.y / 2;
+	m_max.y = m_position.y + m_dimension.y / 2;
 }

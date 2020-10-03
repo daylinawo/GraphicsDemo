@@ -1,5 +1,6 @@
 #include "Square.h"
 #include "Input.h"
+#include "Shapes.h"
 
 #include <iostream>
 
@@ -7,14 +8,16 @@ const float SPEED = 32.5f;
 
 Square::Square(float xPos, float yPos, int size, float r, float g, float b)
 {
-	m_quad = new Quad(xPos, yPos, size, size, r, g, b);
+	m_width = size;
+	m_height = size;
+	m_colour = { r, g, b };
+	m_position = { xPos, yPos };
 
-	m_up = 1.0f;
-	m_right = 1.0f;
-	m_none = 0.0f;
+	m_up = { 0.0f, 1.0f };
+	m_right = { 1.0f, 0.0f };
+	m_none = { 0.0f, 0.0f };
 
-	m_dirX = m_right;
-	m_dirY = m_up;
+	m_direction = m_none;
 
 	m_boxCollider.SetDimension(size, size);
 	m_boxCollider.SetPosition(xPos, yPos);
@@ -22,11 +25,10 @@ Square::Square(float xPos, float yPos, int size, float r, float g, float b)
 
 void Square::Update(float deltaTime)
 {
-
 	if (Input::Instance()->IsMouseClicked(SDL_BUTTON_LEFT))
 	{
-		float mouseXPos = Input::Instance()->GetMousePositionX();
-		float mouseYPos = Input::Instance()->GetMousePositionY();
+		float mouseXPos = static_cast<float>(Input::Instance()->GetMousePosition().x);
+		float mouseYPos = static_cast<float>(Input::Instance()->GetMousePosition().y);
 		
 		BoxCollider collider;
 		collider.SetDimension(0, 0);
@@ -37,7 +39,6 @@ void Square::Update(float deltaTime)
 			OnCollision();
 		}
 	}
-
 }
 
 const BoxCollider& Square::GetCollider() const
@@ -47,21 +48,21 @@ const BoxCollider& Square::GetCollider() const
 
 void Square::OnCollision()
 {
-	float mouseXPos = Input::Instance()->GetMousePositionX();
-	float mouseYPos = Input::Instance()->GetMousePositionY();
+	float mouseXPos = static_cast<float>(Input::Instance()->GetMousePosition().x);
+	float mouseYPos = static_cast<float>(Input::Instance()->GetMousePosition().y);
 
-	m_quad->SetColor(0.0f, 0.0f, 0.0f);
-	m_quad->SetPosition(mouseXPos, mouseYPos);
+	m_colour = { 0.0f, 0.0f, 0.0f };
+	m_position = { mouseXPos, mouseYPos };
 	m_boxCollider.SetPosition(mouseXPos, mouseYPos);
 }
 
 void Square::Draw()
 {
-	m_quad->Draw();
+	Shapes::DrawQuad(m_position.x, m_position.y, m_width, 
+					 m_height, m_colour.r, m_colour.g, m_colour.b);
 }
 
 Square::~Square()
 {
-	delete m_quad;
-	m_quad = nullptr;
+	//
 }

@@ -1,5 +1,8 @@
 #pragma once
-#include "Quad.h"
+
+#include "Utility.h"
+
+using namespace Utility;
 
 class Background
 {
@@ -16,7 +19,7 @@ public:
 
 private:
 
-	Quad* m_quad;
+	Colour m_colour;
 
 };
 

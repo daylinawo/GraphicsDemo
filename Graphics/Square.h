@@ -1,6 +1,10 @@
 #pragma once
-#include "Quad.h"
+
 #include "BoxCollider.h"
+#include "Vector.h"
+#include "Utility.h"
+
+using namespace Utility;
 
 class Square
 {
@@ -21,15 +25,17 @@ public:
 
 private:
 
-	float m_up;
-	float m_right;
-	float m_none;
+	int m_width;
+	int m_height;
 
-	float m_dirX;
-	float m_dirY;
+	Vector<float> m_direction;
+	Vector<float> m_position;
 
-	Quad* m_quad;
+	Vector<float> m_up;
+	Vector<float> m_right;
+	Vector<float> m_none;
+
 	BoxCollider m_boxCollider;
-
+	Colour m_colour;
 };
 

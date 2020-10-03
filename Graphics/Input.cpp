@@ -10,12 +10,14 @@ Input* Input::Instance()
 Input::Input()
 {
 	m_key = ' ';
-	m_isWindowClosed = false;
 	m_isKeyPressed = false;
-	m_mousePositionX = 0;
-	m_mousePositionY = 0;
-	m_mouseMotionX = 0;
-	m_mouseMotionY = 0;
+	m_isMouseClicked = false;
+	m_isWindowClosed = false;
+
+	m_mousePosition = { 0, 0 };
+	m_mouseMotion = { 0, 0 };
+
+	m_mouseButton = SDL_MOUSE_NONE;
 }
 
 bool Input::IsWindowClosed()
@@ -44,24 +46,14 @@ bool Input::IsMouseClicked(int mouseButton)
 	return m_mouseButton == mouseButton;
 }
 
-int Input::GetMousePositionX()
+const Vector<int>& Input::GetMousePosition() const
 {
-	return m_mousePositionX;
+	return m_mousePosition;
 }
 
-int Input::GetMousePositionY()
+const Vector<int>& Input::GetMouseMotion() const
 {
-	return m_mousePositionY;
-}
-
-int Input::GetMouseMotionX()
-{
-	return m_mouseMotionX;
-}
-
-int Input::GetMouseMotionY()
-{
-	return m_mouseMotionY;
+	return m_mouseMotion;
 }
 
 void Input::Update()
@@ -94,11 +86,11 @@ void Input::Update()
 
 			case SDL_MOUSEMOTION:
 			{
-				m_mousePositionX = events.motion.x;
-				m_mousePositionY = events.motion.y;
+				m_mousePosition.x = events.motion.x;
+				m_mousePosition.y = events.motion.y;
 
-				m_mouseMotionX = events.motion.xrel;
-				m_mouseMotionY = events.motion.yrel;
+				m_mouseMotion.x = events.motion.xrel;
+				m_mouseMotion.y = events.motion.yrel;
 
 				break;
 			}
@@ -106,8 +98,8 @@ void Input::Update()
 			case SDL_MOUSEBUTTONUP:
 			{
 				m_isMouseClicked = false;
-				m_mousePositionX = events.motion.x;
-				m_mousePositionY = events.motion.y;
+				m_mousePosition.x = events.motion.x;
+				m_mousePosition.y = events.motion.y;
 
 				if (events.button.button == SDL_BUTTON_LEFT)
 				{
@@ -120,8 +112,8 @@ void Input::Update()
 			case SDL_MOUSEBUTTONDOWN:
 			{
 				m_isMouseClicked = true;
-				m_mousePositionX = events.motion.x;
-				m_mousePositionY = events.motion.y;
+				m_mousePosition.x = events.motion.x;
+				m_mousePosition.y = events.motion.y;
 
 				if (events.button.button == SDL_BUTTON_LEFT)
 				{
