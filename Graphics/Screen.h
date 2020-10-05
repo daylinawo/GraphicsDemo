@@ -19,6 +19,8 @@ public:
 
 	void ClearBuffer();
 	void SwapBuffer();
+	void DisplayProfile();
+	void DisplayExtensions();
 
 public:
 

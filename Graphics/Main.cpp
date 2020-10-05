@@ -4,8 +4,6 @@
 #include "Utility.h"
 
 #include <map>
-#include <iostream>
-
 
 float deltaTime = 0.0f;
 int lastTime = SDL_GetTicks();

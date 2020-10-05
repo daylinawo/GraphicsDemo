@@ -2,8 +2,7 @@
 #include "Utility.h"
 
 #include <iostream>
-#include <vector>
-#include <map>
+
 
 Screen* Screen::Instance()
 {
@@ -27,6 +26,23 @@ void Screen::ClearBuffer()
 void Screen::SwapBuffer()
 {
 	SDL_GL_SwapWindow(m_window);
+}
+
+void Screen::DisplayProfile()
+{
+	std::cout << reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION)) << std::endl;
+}
+
+void Screen::DisplayExtensions()
+{
+	GLint totalExtensions;
+	glGetIntegerv(GL_NUM_EXTENSIONS, &totalExtensions);
+
+	for (GLint i = 0; i < totalExtensions; i++)
+	{
+		std::cout << "Extension #" << i << " : "
+				  << reinterpret_cast<const char*>(glGetStringi(GL_EXTENSIONS, i)) << std::endl;
+	}
 }
 
 int Screen::GetWidth()
@@ -73,7 +89,10 @@ bool Screen::Initialize(const std::string& windowName, int width, int height,
 		return false;
 	}
 
-	gladLoadGL();
+	if (!gladLoadGL())
+	{
+		std::cout << "Could not load glad." << std::endl;
+	}
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
