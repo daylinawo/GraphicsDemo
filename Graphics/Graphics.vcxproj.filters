@@ -40,6 +40,9 @@
     <Filter Include="Header Files\Components">
       <UniqueIdentifier>{485e0e62-6924-457e-95fd-c21eacab1967}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Shaders">
+      <UniqueIdentifier>{11fdc740-a08c-4582-ace4-7f8a128c923b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -75,6 +78,9 @@
     <ClCompile Include="Shapes.cpp">
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
+    <ClCompile Include="Pipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -104,5 +110,16 @@
     <ClInclude Include="Shapes.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
+    <ClInclude Include="Pipeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\Main.vert">
+      <Filter>Header Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Main.frag">
+      <Filter>Header Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

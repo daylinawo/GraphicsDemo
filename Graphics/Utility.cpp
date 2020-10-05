@@ -29,7 +29,7 @@ void Utility::ParseString(const std::string& str, char token, std::vector<std::s
 
 }
 
-void Utility::GetFileContents(const std::string& path, std::vector<std::string>& buffer)
+void Utility::GetFileContents(const std::string& path, std::string& buffer)
 {
 	std::ifstream file(path, std::ios_base::in);
 
@@ -39,7 +39,7 @@ void Utility::GetFileContents(const std::string& path, std::vector<std::string>&
 
 		while (std::getline(file, line))
 		{
-			buffer.push_back(line);
+			buffer += line;
 		}
 
 		file.close();

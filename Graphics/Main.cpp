@@ -2,6 +2,7 @@
 #include "Screen.h"
 #include "Renderer.h"
 #include "Utility.h"
+#include "Pipeline.h"
 
 #include <map>
 
@@ -11,26 +12,52 @@ bool isEngineRunning = true;
 
 int main(int argc, char* args[])
 {
+	std::string settings;
+	std::map<std::string, std::string> configs;
 
-	std::vector<std::string> readBuffer;
-	std::map<std::string, std::string> m_configs;
+	Utility::GetFileContents("Assets/Files/Settings.ini", settings);
 
-	Utility::GetFileContents("Assets/Files/settings.ini", readBuffer);
-
-	if (!readBuffer.empty())
+	if (!settings.empty())
 	{
-		for (auto it = readBuffer.begin(); it != readBuffer.end(); it++)
+		size_t sectionPos = settings.find("Basic");
+		if (sectionPos != std::string::npos)
 		{
-			std::vector<std::string> tempConfig;
-			Utility::ParseString((*it), '=', tempConfig);
+			for (auto it = settings.begin(); it != settings.end(); it++)
+			{
+				//std::vector<std::string> tempConfig;
+				//Utility::ParseString((*it), '=', tempConfig);
 
-			m_configs.insert({ tempConfig[0], tempConfig[1] });
+				//configs.insert({ tempConfig[0], tempConfig[1] });
+			}
 		}
+
 	}
 
-	Screen::Instance()->Initialize(m_configs["WindowTitle"], std::stoi(m_configs["ScreenWidth"]), 
-								   std::stoi(m_configs["ScreenHeight"]), std::stoi(m_configs["Fullscreen"]),
-								   std::stoi(m_configs["CoreMode"]), std::stoi(m_configs["OpenGLScreen"]));
+	Screen::Instance()->Initialize(configs["WindowTitle"], std::stoi(configs["ScreenWidth"]), 
+								   std::stoi(configs["ScreenHeight"]), std::stoi(configs["Fullscreen"]),
+								   std::stoi(configs["CoreMode"]), std::stoi(configs["OpenGLScreen"]));
+
+	if (!Pipeline::Instance()->CreateProgram())
+	{
+		return 0;
+	}
+
+	if (!Pipeline::Instance()->CreateShaders())
+	{
+		return 0;
+	}
+
+	if (!Pipeline::Instance()->CompileShaders("Shaders/Main.vert"))
+	{
+		return 0;
+	}
+
+	Pipeline::Instance()->AttachShaders();
+
+	if (!Pipeline::Instance()->LinkProgram())
+	{
+		return 0;
+	}
 
 	Renderer* renderer = new Renderer();
 
@@ -47,6 +74,12 @@ int main(int argc, char* args[])
 		renderer->Draw();
 	}
 
+	//===========================
+	// shutdown tasks
+	//===========================
+	Pipeline::Instance()->DetachShaders();
+	Pipeline::Instance()->DestroyShaders();
+	Pipeline::Instance()->DestroyProgram();
 	Screen::Instance()->Shutdown();
 
 	return 0;
