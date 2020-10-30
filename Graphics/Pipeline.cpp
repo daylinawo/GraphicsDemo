@@ -1,4 +1,6 @@
 #include "Pipeline.h"
+#include "Utility.h"
+
 #include <fstream>
 #include <iostream>
 
@@ -21,7 +23,7 @@ bool Pipeline::CreateProgram()
 
 	if (!m_shaderProgramID)
 	{
-		std::cout << "Error creating shader program." << std::endl;
+		Utility::Log("Error creating shader program.");
 		system("pause");
 		return false;
 	}
@@ -35,16 +37,16 @@ bool Pipeline::CreateShaders()
 
 	if (!m_vertexShaderID)
 	{
-		std::cout << "Error creating vertex shader object." << std::endl;
+		Utility::Log("Error creating vertex shader object.");
 		system("pause");
 		return false;
 	}
 
 	m_fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
-	if (!m_vertexShaderID)
+	if (!m_fragmentShaderID)
 	{
-		std::cout << "Error creating fragment shader object." << std::endl;
+		Utility::Log("Error creating fragment shader object.");
 		system("pause");
 		return false;
 	}
@@ -52,13 +54,28 @@ bool Pipeline::CreateShaders()
 	return true;
 }
 
-bool Pipeline::CompileShaders(const std::string& filename)
+bool Pipeline::CompileShaders(const std::string& filename, ShaderType type)
 {
+	GLuint shaderID = 0;
+
+	switch (type)
+	{
+		case ShaderType::VERTEX:
+		{
+			shaderID = m_vertexShaderID;
+			break;
+		}	
+		case ShaderType::FRAGMENT:
+		{
+			shaderID = m_fragmentShaderID;
+			break;
+		}
+	}
 	std::fstream file(filename);
 
 	if (!file)
 	{
-		std::cout << "Error reading shader file." << std::endl;
+		Utility::Log("Error reading shader file.");
 		system("pause");
 		return false;
 	}
@@ -78,20 +95,20 @@ bool Pipeline::CompileShaders(const std::string& filename)
 	const GLchar* sourceCodeC = static_cast<const GLchar*>(sourceCode.c_str());
 
 	//bind source code to vertex shader object
-	glShaderSource(m_vertexShaderID, 1, &sourceCodeC, nullptr);
+	glShaderSource(shaderID, 1, &sourceCodeC, nullptr);
 
 	//compile vertex shader code
-	glCompileShader(m_vertexShaderID);
+	glCompileShader(shaderID);
 
 	//================================================================================
 
 	GLint compileResult = 0;
 
-	glGetShaderiv(m_vertexShaderID, GL_COMPILE_STATUS, &compileResult);
+	glGetShaderiv(shaderID, GL_COMPILE_STATUS, &compileResult);
 
 	if (compileResult == GL_TRUE)
 	{
-		std::cout << "Shader compilation successful." << std::endl;
+		Utility::Log("Shader compilation successful.");
 	}
 
 	else
@@ -99,7 +116,7 @@ bool Pipeline::CompileShaders(const std::string& filename)
 		GLchar errorMessage[1000];
 		GLsizei bufferSize = 1000;
 
-		glGetShaderInfoLog(m_vertexShaderID, bufferSize, &bufferSize, errorMessage);
+		glGetShaderInfoLog(shaderID, bufferSize, &bufferSize, errorMessage);
 
 		std::cout << errorMessage << std::endl;
 		return false;
@@ -127,7 +144,7 @@ bool Pipeline::LinkProgram()
 
 	if (linkResult == GL_TRUE)
 	{
-		std::cout << "Shader program linking successful." << std::endl;
+		Utility::Log("Shader program linking successful.");
 	}
 
 	else
@@ -137,7 +154,7 @@ bool Pipeline::LinkProgram()
 
 		glGetProgramInfoLog(m_shaderProgramID, bufferSize, &bufferSize, errorMessage);
 
-		std::cout << errorMessage << std::endl;
+		Utility::Log(errorMessage);
 		return false;
 	}
 
@@ -159,5 +176,134 @@ void Pipeline::DestroyShaders()
 void Pipeline::DestroyProgram()
 {
 	glDeleteProgram(m_shaderProgramID);
+}
+
+bool Pipeline::BindAttribute(const std::string& attribute)
+{
+	if (m_attributes.find(attribute) != m_attributes.end())
+	{
+		Utility::Log("Vertex attribute \"" + attribute + "\" already exists.");
+		return false;
+	}
+
+	GLuint vertexattributeID = glGetAttribLocation(Pipeline::Instance()->GetProgramID(),
+		attribute.c_str());
+
+	if (vertexattributeID == -1)
+	{
+		Utility::Log("No vertex attribute by the name of \"" + attribute + "\" exists.");
+		return false;
+	}
+
+	m_attributes.insert({ attribute, vertexattributeID });
+
+	return true;
+}
+
+bool Pipeline::BindUniform(const std::string& uniform)
+{
+	if (m_uniforms.find(uniform) != m_uniforms.end())
+	{
+		Utility::Log("Vertex uniform \"" + uniform + "\" already exists.");
+		return false;
+	}
+	
+	GLuint vertexUniformID = glGetUniformLocation(Pipeline::Instance()->GetProgramID(),
+												  uniform.c_str());
+
+	if (vertexUniformID == -1)
+	{
+		Utility::Log("No vertex uniform by the name of \"" + uniform + "\" exists.");
+		return false;
+	}
+
+	m_uniforms.insert({ uniform, vertexUniformID });
+
+	return true;
+}
+
+GLuint Pipeline::GetProgramID()
+{
+	return m_shaderProgramID;
+}
+
+GLuint Pipeline::GetAttributeID(const std::string& attribute)
+{
+	if (m_attributes.find(attribute) != m_attributes.end())
+	{
+		return m_attributes[attribute];
+	}
+
+	return -1;
+}
+
+GLuint Pipeline::GetUniformID(const std::string& uniform)
+{
+	if (m_uniforms.find(uniform) != m_uniforms.end())
+	{
+		return m_uniforms[uniform];
+	}
+
+	return -1;
+}
+
+void Pipeline::SendUniformData(const std::string& uniform, GLint intData)
+{
+	GLuint uniformID = GetUniformID(uniform);
+
+	if (uniformID != -1)
+	{
+		glUniform1i(uniformID, intData);
+	}
+}
+
+void Pipeline::SendUniformData(const std::string& uniform, GLuint uintData)
+{
+	GLuint uniformID = GetUniformID(uniform);
+
+	if (uniformID != -1)
+	{
+		glUniform1ui(uniformID, uintData);
+	}
+}
+
+void Pipeline::SendUniformData(const std::string& uniform, GLfloat floatData)
+{
+	GLuint uniformID = GetUniformID(uniform);
+
+	if (uniformID != -1)
+	{
+		glUniform1f(uniformID, floatData);
+	}
+}
+
+void Pipeline::SendUniformData(const std::string& uniform, GLfloat x, GLfloat y)
+{
+	GLuint uniformID = GetUniformID(uniform);
+
+	if (uniformID != -1)
+	{
+		glUniform2f(uniformID, x, y);
+	}
+}
+
+void Pipeline::SendUniformData(const std::string& uniform, GLfloat x, GLfloat y, GLfloat z)
+{
+	GLuint uniformID = GetUniformID(uniform);
+
+	if (uniformID != -1)
+	{
+		glUniform3f(uniformID, x, y, z);
+	}
+}
+
+void Pipeline::SendUniformData(const std::string& uniform, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
+{
+	GLuint uniformID = GetUniformID(uniform);
+
+	if (uniformID != -1)
+	{
+		glUniform4f(uniformID, x, y, z, w);
+	}
 }
 

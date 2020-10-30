@@ -22,26 +22,17 @@
     <Filter Include="Source Files\Managers">
       <UniqueIdentifier>{e61e25eb-58f4-486b-8811-e012461edb40}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\SceneObjects">
-      <UniqueIdentifier>{78c3db72-1799-4967-bbac-1fef42dae723}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\SceneObjects">
-      <UniqueIdentifier>{90006216-18a6-46b7-947b-cba80edc7b19}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Misc">
       <UniqueIdentifier>{046c7def-01ba-4ac6-8571-cc3aa380b821}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Misc">
       <UniqueIdentifier>{2dae3b33-7441-430c-b607-bb4bd8a2e774}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Components">
-      <UniqueIdentifier>{bf31f3fc-9a06-4208-8ecb-ccf8f296171e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Components">
-      <UniqueIdentifier>{485e0e62-6924-457e-95fd-c21eacab1967}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Shaders">
       <UniqueIdentifier>{11fdc740-a08c-4582-ace4-7f8a128c923b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Core">
+      <UniqueIdentifier>{17a618cf-9fb5-455f-9560-10dd438733c9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -57,29 +48,17 @@
     <ClCompile Include="Screen.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Background.cpp">
-      <Filter>Source Files\SceneObjects</Filter>
-    </ClCompile>
     <ClCompile Include="Utility.cpp">
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
     <ClCompile Include="glad.c">
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
-    <ClCompile Include="Square.cpp">
-      <Filter>Source Files\SceneObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="BoxCollider.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Vector.cpp">
-      <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Shapes.cpp">
-      <Filter>Source Files\Misc</Filter>
-    </ClCompile>
     <ClCompile Include="Pipeline.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="App.cpp">
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -92,26 +71,14 @@
     <ClInclude Include="Screen.h">
       <Filter>Header Files\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Background.h">
-      <Filter>Header Files\SceneObjects</Filter>
-    </ClInclude>
     <ClInclude Include="Utility.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="BoxCollider.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Square.h">
-      <Filter>Header Files\SceneObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Shapes.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="Pipeline.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="App.h">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

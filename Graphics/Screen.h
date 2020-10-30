@@ -22,10 +22,16 @@ public:
 	void DisplayProfile();
 	void DisplayExtensions();
 
+	void SetOutlineMode(bool flag);
+	bool IsOutlineMode();
+
 public:
 
+	void SetScreenColor(float r, float g, float b, float a);
 	int GetWidth();
 	int GetHeight();
+
+	void ResizeWindow(int width, int height);
 
 private:
 
@@ -45,6 +51,8 @@ private:
 
 	int m_width;
 	int m_height;
+
+	bool m_isOutlineMode;
 
 };
 

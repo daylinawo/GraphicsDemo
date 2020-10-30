@@ -3,8 +3,6 @@
 
 #include "Background.h"
 #include "glad.h"
-#include "Square.h"
-#include <vector>
 
 class Renderer
 {
@@ -16,12 +14,16 @@ public:
 
 public:
 
-	void Update(float deltaTime);
 	void Draw();
+	void Update();
 
 private:
 
-	Background* m_background;
-	std::vector<Square*> m_squares;
+	GLuint m_VAO;
+	GLuint m_EBO;
+	GLuint m_colorVBO;
+	GLuint m_vertexVBO;
+
+	float m_time;
 };
 

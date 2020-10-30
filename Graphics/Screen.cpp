@@ -1,8 +1,6 @@
 #include "Screen.h"
 #include "Utility.h"
-
 #include <iostream>
-
 
 Screen* Screen::Instance()
 {
@@ -16,6 +14,7 @@ Screen::Screen()
 	m_context = nullptr;
 	m_width = NULL;
 	m_height = NULL;
+	m_isOutlineMode = false;
 }
 
 void Screen::ClearBuffer()
@@ -45,6 +44,35 @@ void Screen::DisplayExtensions()
 	}
 }
 
+void Screen::SetOutlineMode(bool flag)
+{
+	switch (flag)
+	{
+		case true:
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			m_isOutlineMode = true;
+			break;
+		}
+		case false:
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			m_isOutlineMode = false;
+			break;
+		}
+	}
+}
+
+bool Screen::IsOutlineMode()
+{	
+	return m_isOutlineMode;
+}
+
+void Screen::SetScreenColor(float r, float g, float b, float a)
+{
+	glClearColor(r, g, b, a);
+}
+
 int Screen::GetWidth()
 {
 	return m_width;
@@ -53,6 +81,11 @@ int Screen::GetWidth()
 int Screen::GetHeight()
 {
 	return m_height;
+}
+
+void Screen::ResizeWindow(int width, int height)
+{
+	glViewport(0, 0, m_width, m_height);
 }
 
 bool Screen::Initialize(const std::string& windowName, int width, int height,
@@ -101,11 +134,10 @@ bool Screen::Initialize(const std::string& windowName, int width, int height,
 	return true;
 }
 
-
 bool Screen::SetupWindow(const std::string& windowTitle, int width, 
 						 int height, bool fullscreen, bool openGLScreen)
 {
-	Uint32 screenFlag = (fullscreen) ? SDL_WINDOW_FULLSCREEN : 0;
+	Uint32 screenFlag = (fullscreen) ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_RESIZABLE;
 	screenFlag |= (openGLScreen) ? SDL_WINDOW_OPENGL : 0;
 
 	m_window = SDL_CreateWindow(windowTitle.c_str(),

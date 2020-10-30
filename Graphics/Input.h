@@ -4,7 +4,6 @@
 
 
 #include <SDL.h>
-#include "Vector.h"
 
 class Input
 {
@@ -27,8 +26,10 @@ public:
 	bool IsMouseClicked(int mouseButton);
 
 	char GetKey();
-	const Vector<int>& GetMousePosition() const;
-	const Vector<int>& GetMouseMotion() const;
+	int GetMousePositionX();
+	int GetMousePositionY();
+	int GetMouseMotionX();
+	int GetMouseMotionY();
 
 private:
 
@@ -44,8 +45,10 @@ private:
 	bool m_isWindowClosed;
 	bool m_isMouseClicked;
 
-	Vector<int> m_mousePosition;
-	Vector<int> m_mouseMotion;
+	int m_mousePositionX;
+	int m_mousePositionY;
+	int m_mouseMotionX;
+	int m_mouseMotionY;
 
 	int m_mouseButton;
 

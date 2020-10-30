@@ -1,4 +1,7 @@
 #include "Input.h"
+#include "Screen.h"
+#include "Utility.h"
+
 #include <iostream>
 
 Input* Input::Instance()
@@ -14,8 +17,10 @@ Input::Input()
 	m_isMouseClicked = false;
 	m_isWindowClosed = false;
 
-	m_mousePosition = { 0, 0 };
-	m_mouseMotion = { 0, 0 };
+	m_mousePositionX = 0;
+	m_mousePositionY = 0;
+	m_mouseMotionX = 0;
+	m_mouseMotionY = 0;
 
 	m_mouseButton = SDL_MOUSE_NONE;
 }
@@ -46,14 +51,24 @@ bool Input::IsMouseClicked(int mouseButton)
 	return m_mouseButton == mouseButton;
 }
 
-const Vector<int>& Input::GetMousePosition() const
+int Input::GetMousePositionX()
 {
-	return m_mousePosition;
+	return m_mousePositionX;
 }
 
-const Vector<int>& Input::GetMouseMotion() const
+int Input::GetMousePositionY()
 {
-	return m_mouseMotion;
+	return m_mousePositionY;
+}
+
+int Input::GetMouseMotionX()
+{
+	return m_mouseMotionX;
+}
+
+int Input::GetMouseMotionY()
+{
+	return m_mouseMotionY;
 }
 
 void Input::Update()
@@ -86,11 +101,11 @@ void Input::Update()
 
 			case SDL_MOUSEMOTION:
 			{
-				m_mousePosition.x = events.motion.x;
-				m_mousePosition.y = events.motion.y;
+				m_mousePositionX = events.motion.x;
+				m_mousePositionY = events.motion.y;
 
-				m_mouseMotion.x = events.motion.xrel;
-				m_mouseMotion.y = events.motion.yrel;
+				m_mouseMotionX = events.motion.xrel;
+				m_mouseMotionY = events.motion.yrel;
 
 				break;
 			}
@@ -98,8 +113,8 @@ void Input::Update()
 			case SDL_MOUSEBUTTONUP:
 			{
 				m_isMouseClicked = false;
-				m_mousePosition.x = events.motion.x;
-				m_mousePosition.y = events.motion.y;
+				m_mousePositionX = events.motion.x;
+				m_mousePositionY = events.motion.y;
 
 				if (events.button.button == SDL_BUTTON_LEFT)
 				{
@@ -112,8 +127,8 @@ void Input::Update()
 			case SDL_MOUSEBUTTONDOWN:
 			{
 				m_isMouseClicked = true;
-				m_mousePosition.x = events.motion.x;
-				m_mousePosition.y = events.motion.y;
+				m_mousePositionX = events.motion.x;
+				m_mousePositionY = events.motion.y;
 
 				if (events.button.button == SDL_BUTTON_LEFT)
 				{
@@ -123,6 +138,16 @@ void Input::Update()
 				break;
 			}
 
+			case SDL_WINDOWEVENT:
+			{
+				if (events.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+				{
+					Screen::Instance()->ResizeWindow(events.window.data1, events.window.data2);
+					Utility::Log("Width: " + std::to_string(events.window.data1));
+					Utility::Log("Height: " + std::to_string(events.window.data2) + "\n");
+				}
+				break;
+			}
 		}
 	}
 }
