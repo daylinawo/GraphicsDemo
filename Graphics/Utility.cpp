@@ -142,3 +142,12 @@ void Utility::Log(const std::string& message)
 {
 	std::cout << message << std::endl;
 }
+void Utility::Log(const glm::vec3& vec)
+{
+	std::cout << vec.x << ", " << vec.y << ", " << vec.z << std::endl;
+}
+void Utility::Log(const glm::vec3& vec, const std::string& message)
+{
+	std::cout << message << ": " << vec.x << ", " << 
+				 vec.y << ", " << vec.z << std::endl;
+}

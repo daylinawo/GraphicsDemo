@@ -22,7 +22,6 @@ public:
 	bool IsRunning();
 
 private:
-
 	Renderer* m_renderer;
 	bool m_isRunning;
 	int m_lastTime;

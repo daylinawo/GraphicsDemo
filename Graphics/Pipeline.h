@@ -10,7 +10,7 @@ public:
 
 	static Pipeline* Instance();
 	enum class ShaderType { VERTEX, FRAGMENT };
-
+	
 public:
 
 	bool CreateProgram();

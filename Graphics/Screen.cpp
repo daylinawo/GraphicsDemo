@@ -19,7 +19,7 @@ Screen::Screen()
 
 void Screen::ClearBuffer()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Screen::SwapBuffer()
@@ -126,10 +126,6 @@ bool Screen::Initialize(const std::string& windowName, int width, int height,
 	{
 		std::cout << "Could not load glad." << std::endl;
 	}
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0.0f, width, height, 0.0f, 0.0f, 1.0f);
 
 	return true;
 }

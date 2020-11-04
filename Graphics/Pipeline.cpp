@@ -186,16 +186,16 @@ bool Pipeline::BindAttribute(const std::string& attribute)
 		return false;
 	}
 
-	GLuint vertexattributeID = glGetAttribLocation(Pipeline::Instance()->GetProgramID(),
-		attribute.c_str());
+	GLuint vertexAttributeID = glGetAttribLocation(Pipeline::Instance()->GetProgramID(),
+												   attribute.c_str());
 
-	if (vertexattributeID == -1)
+	if (vertexAttributeID == -1)
 	{
 		Utility::Log("No vertex attribute by the name of \"" + attribute + "\" exists.");
 		return false;
 	}
 
-	m_attributes.insert({ attribute, vertexattributeID });
+	m_attributes.insert({ attribute, vertexAttributeID });
 
 	return true;
 }

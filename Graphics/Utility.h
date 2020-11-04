@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <glm.hpp>
 
 namespace Utility
 {
@@ -20,5 +21,7 @@ namespace Utility
 	float Clamp(float value, float min, float max);
 
 	void Log(const std::string& message);
+	void Log(const glm::vec3& vec);
+	void Log(const glm::vec3& vec, const std::string& message);
 };
 

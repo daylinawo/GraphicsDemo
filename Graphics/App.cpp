@@ -8,6 +8,7 @@ App::App()
 {
 	m_isRunning = false;
 	m_lastTime = SDL_GetTicks();
+	m_renderer = nullptr;
 }
 
 bool App::Initialize()
@@ -20,7 +21,7 @@ bool App::Initialize()
 								   std::stoi(config["ScreenHeight"]), std::stoi(config["Fullscreen"]),
 								   std::stoi(config["CoreMode"]), std::stoi(config["OpenGLScreen"]));
 
-	Screen::Instance()->SetScreenColor(1.0f, 0.0f, 0.0f, 0.0f);
+	Screen::Instance()->SetScreenColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	if (!Pipeline::Instance()->CreateProgram())
 	{
@@ -58,26 +59,13 @@ bool App::Initialize()
 
 void App::Run()
 {
-	static bool isKeyPressed = false;
+	float deltaTime = (SDL_GetTicks() - m_lastTime) / 1000.0f;
+	m_lastTime = SDL_GetTicks();
 
 	Input::Instance()->Update();
 
-	if (Input::Instance()->IsKeyPressed(SDL_SCANCODE_O) && !isKeyPressed)
-	{
-		if (Screen::Instance()->IsOutlineMode())
-		{
-			Screen::Instance()->SetOutlineMode(false);
-		}
-		else
-		{
-			Screen::Instance()->SetOutlineMode(true);
-		}
-	}
 
-	isKeyPressed = Input::Instance()->IsKeyPressed(SDL_SCANCODE_O);
-
-
-	m_renderer->Update();
+	m_renderer->Update(deltaTime);
 	m_renderer->Draw();
 	
 	m_isRunning = !(Input::Instance()->IsWindowClosed());

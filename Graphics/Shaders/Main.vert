@@ -4,8 +4,12 @@ in vec3 vertexIn;
 in vec3 colorIn;
 out vec3 colorOut;
 
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
 void main(void)
 {
 	colorOut = colorIn;
-	gl_Position = vec4(vertexIn, 1);
+	gl_Position = projection * view * model * vec4(vertexIn, 1.0);
 }
