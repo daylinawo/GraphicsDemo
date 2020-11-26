@@ -1,9 +1,12 @@
 #pragma once
 
 #include "glad.h"
+
+#include <map>
 #include <SDL.h>
 #include <string>
-#include <map>
+#include <glm.hpp>
+#include <gtc\matrix_transform.hpp>
 
 class Screen
 {
@@ -21,17 +24,20 @@ public:
 	void SwapBuffer();
 	void DisplayProfile();
 	void DisplayExtensions();
-
-	void SetOutlineMode(bool flag);
-	bool IsOutlineMode();
+	void ResizeWindow(int width, int height);
 
 public:
 
 	void SetScreenColor(float r, float g, float b, float a);
+	void SetOutlineMode(bool flag);
+	void SetScreen2D();
+	void SetScreen3D(float fov = 45.0f, float nearClip = 0.1f, float farClip = 500.0f);
+	void SetZoom(float fov);
+
 	int GetWidth();
 	int GetHeight();
 
-	void ResizeWindow(int width, int height);
+	bool IsOutlineMode();
 
 private:
 
@@ -46,13 +52,19 @@ private:
 
 private:
 
-	SDL_Window* m_window;
-	SDL_GLContext m_context;
-
 	int m_width;
 	int m_height;
 
+	float m_fov;
+	float m_nearClip;
+	float m_farClip;
+	
 	bool m_isOutlineMode;
+
+	glm::mat4 m_projection;
+
+	SDL_Window* m_window;
+	SDL_GLContext m_context;
 
 };
 

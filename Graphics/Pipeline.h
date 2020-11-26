@@ -3,6 +3,7 @@
 #include "glad.h"
 #include <string>
 #include <map>
+#include <glm.hpp>
 
 class Pipeline
 {
@@ -40,9 +41,12 @@ public:
 	void SendUniformData(const std::string& uniform, GLuint uintData);
 	void SendUniformData(const std::string& uniform, GLfloat floatData);
 		
-	void SendUniformData(const std::string& uniform, GLfloat x, GLfloat y);
-	void SendUniformData(const std::string& uniform, GLfloat x, GLfloat y, GLfloat z);
-	void SendUniformData(const std::string& uniform, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+	void SendUniformData(const std::string& uniform, const glm::vec2& vec2Data);
+	void SendUniformData(const std::string& uniform, const glm::vec3& vec3Data);
+	void SendUniformData(const std::string& uniform, const glm::vec4& vec4Data);
+
+	void SendUniformData(const std::string& uniform, const glm::mat4& mat4Data, bool transpose = false);
+	void SendUniformData(const std::string& uniform, const glm::mat3& mat3Data, bool transpose = false);
 
 private:
 	

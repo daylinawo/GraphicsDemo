@@ -182,7 +182,7 @@ bool Pipeline::BindAttribute(const std::string& attribute)
 {
 	if (m_attributes.find(attribute) != m_attributes.end())
 	{
-		Utility::Log("Vertex attribute \"" + attribute + "\" already exists.");
+		//Utility::Log("Vertex attribute \"" + attribute + "\" already exists.");
 		return false;
 	}
 
@@ -249,61 +249,45 @@ GLuint Pipeline::GetUniformID(const std::string& uniform)
 
 void Pipeline::SendUniformData(const std::string& uniform, GLint intData)
 {
-	GLuint uniformID = GetUniformID(uniform);
-
-	if (uniformID != -1)
-	{
-		glUniform1i(uniformID, intData);
-	}
+	glUniform1i(GetUniformID(uniform), intData);
 }
 
 void Pipeline::SendUniformData(const std::string& uniform, GLuint uintData)
 {
-	GLuint uniformID = GetUniformID(uniform);
-
-	if (uniformID != -1)
-	{
-		glUniform1ui(uniformID, uintData);
-	}
+	glUniform1ui(GetUniformID(uniform), uintData);
 }
 
 void Pipeline::SendUniformData(const std::string& uniform, GLfloat floatData)
 {
-	GLuint uniformID = GetUniformID(uniform);
-
-	if (uniformID != -1)
-	{
-		glUniform1f(uniformID, floatData);
-	}
+	glUniform1f(GetUniformID(uniform), floatData);
 }
 
-void Pipeline::SendUniformData(const std::string& uniform, GLfloat x, GLfloat y)
+void Pipeline::SendUniformData(const std::string& uniform, const glm::vec2& vec2Data)
 {
-	GLuint uniformID = GetUniformID(uniform);
-
-	if (uniformID != -1)
-	{
-		glUniform2f(uniformID, x, y);
-	}
+	glUniform2fv(GetUniformID(uniform), 1, &vec2Data.x);
 }
 
-void Pipeline::SendUniformData(const std::string& uniform, GLfloat x, GLfloat y, GLfloat z)
+void Pipeline::SendUniformData(const std::string& uniform, const glm::vec3& vec3Data)
 {
-	GLuint uniformID = GetUniformID(uniform);
-
-	if (uniformID != -1)
-	{
-		glUniform3f(uniformID, x, y, z);
-	}
+	glUniform3fv(GetUniformID(uniform), 1, &vec3Data.x);
 }
 
-void Pipeline::SendUniformData(const std::string& uniform, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
+void Pipeline::SendUniformData(const std::string& uniform, const glm::vec4& vec4Data)
 {
-	GLuint uniformID = GetUniformID(uniform);
+	glUniform4fv(GetUniformID(uniform), 1, &vec4Data.x);
+}
 
-	if (uniformID != -1)
-	{
-		glUniform4f(uniformID, x, y, z, w);
-	}
+void Pipeline::SendUniformData(const std::string& uniform, const glm::mat4& mat4Data, bool transpose)
+{
+	GLboolean _transpose = (transpose) ? GL_TRUE : GL_FALSE;
+
+	glUniformMatrix4fv(GetUniformID(uniform), 1, _transpose, &mat4Data[0][0]);
+}
+
+void Pipeline::SendUniformData(const std::string& uniform, const glm::mat3& mat3Data, bool transpose)
+{
+	GLboolean _transpose = (transpose) ? GL_TRUE : GL_FALSE;
+
+	glUniformMatrix3fv(GetUniformID(uniform), 1, _transpose, &mat3Data[0][0]);
 }
 

@@ -1,4 +1,5 @@
 #include "App.h"
+#include "SDL.h"
 
 int main(int argc, char* args[])
 {
@@ -8,7 +9,8 @@ int main(int argc, char* args[])
 
 	while (app->IsRunning())
 	{
-		app->Run();
+		app->Update();
+		app->Draw();
 	}
 
 	app->Exit();

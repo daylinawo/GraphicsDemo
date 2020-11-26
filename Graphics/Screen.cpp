@@ -1,6 +1,11 @@
 #include "Screen.h"
 #include "Utility.h"
+#include "Pipeline.h"
+
 #include <iostream>
+
+const float ZOOM_OUT_MAX = 90.0f;
+const float ZOOM_IN_MAX = 1.0f;
 
 Screen* Screen::Instance()
 {
@@ -10,11 +15,17 @@ Screen* Screen::Instance()
 
 Screen::Screen()
 {
-	m_window = nullptr;
-	m_context = nullptr;
 	m_width = NULL;
 	m_height = NULL;
+	
+	m_fov = 0.0f;
+	m_nearClip = 0.0f;
+	m_farClip = 0.0f;
+
+	m_window = nullptr;
+	m_context = nullptr;
 	m_isOutlineMode = false;
+	m_projection = glm::mat4(1.0f);
 }
 
 void Screen::ClearBuffer()
@@ -25,23 +36,6 @@ void Screen::ClearBuffer()
 void Screen::SwapBuffer()
 {
 	SDL_GL_SwapWindow(m_window);
-}
-
-void Screen::DisplayProfile()
-{
-	std::cout << reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION)) << std::endl;
-}
-
-void Screen::DisplayExtensions()
-{
-	GLint totalExtensions;
-	glGetIntegerv(GL_NUM_EXTENSIONS, &totalExtensions);
-
-	for (GLint i = 0; i < totalExtensions; i++)
-	{
-		std::cout << "Extension #" << i << " : "
-				  << reinterpret_cast<const char*>(glGetStringi(GL_EXTENSIONS, i)) << std::endl;
-	}
 }
 
 void Screen::SetOutlineMode(bool flag)
@@ -61,6 +55,63 @@ void Screen::SetOutlineMode(bool flag)
 			break;
 		}
 	}
+}
+
+void Screen::SetScreen2D()
+{
+	//turn off depth test as we do not need this to render in 2D
+	glDisable(GL_DEPTH_TEST);
+
+	//get uniform from shader and add to map
+	Pipeline::Instance()->BindUniform("projection");
+
+	//create projection matrix
+	m_projection = glm::ortho(0.0f, (float)m_width, (float)m_height, 0.0f);
+
+	//send data to the projection uniform in shader
+	Pipeline::Instance()->SendUniformData("projection", m_projection);
+}
+
+void Screen::SetScreen3D(float fov, float nearClip, float farClip)
+{
+	m_fov = fov;
+	m_nearClip = nearClip;
+	m_farClip = farClip;
+
+	//turn on depth testing so objects are rendered in the correct order
+	glEnable(GL_DEPTH_TEST);
+
+	//hide cursor
+	SDL_SetRelativeMouseMode(SDL_TRUE);
+
+	//get uniform from shader and add to map
+	Pipeline::Instance()->BindUniform("projection");
+
+	//create projection matrix
+	m_projection = glm::perspective(glm::radians(fov), (GLfloat)m_width / (GLfloat)m_height, nearClip, farClip);
+
+	//send data to the projection uniform in shader
+	Pipeline::Instance()->SendUniformData("projection", m_projection);
+	
+}
+
+void Screen::SetZoom(float amount)
+{
+	float zoomOutMax = ZOOM_OUT_MAX;
+	float zoomInMax = ZOOM_IN_MAX;
+
+	m_fov = m_fov - amount;
+
+	if (m_fov > zoomOutMax)
+		m_fov = zoomOutMax;
+	else if (m_fov < zoomInMax)
+		m_fov = zoomInMax;
+
+	//create projection matrix
+	m_projection = glm::perspective(glm::radians(m_fov), (GLfloat)m_width / (GLfloat)m_height, m_nearClip, m_farClip);
+
+	//send data to the projection uniform in shader
+	Pipeline::Instance()->SendUniformData("projection", m_projection);
 }
 
 bool Screen::IsOutlineMode()
@@ -133,7 +184,9 @@ bool Screen::Initialize(const std::string& windowName, int width, int height,
 bool Screen::SetupWindow(const std::string& windowTitle, int width, 
 						 int height, bool fullscreen, bool openGLScreen)
 {
-	Uint32 screenFlag = (fullscreen) ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_RESIZABLE;
+	Uint32 screenFlag;
+	
+	screenFlag = (fullscreen) ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_RESIZABLE;
 	screenFlag |= (openGLScreen) ? SDL_WINDOW_OPENGL : 0;
 
 	m_window = SDL_CreateWindow(windowTitle.c_str(),
@@ -160,6 +213,24 @@ bool Screen::SetupWindow(const std::string& windowTitle, int width,
 	m_height = height;
 
 	return true;
+}
+
+void Screen::DisplayProfile()
+{
+	std::cout << reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION)) << std::endl;
+	std::cout << reinterpret_cast<const char*>(glGetString(GL_VERSION)) << std::endl;
+}
+
+void Screen::DisplayExtensions()
+{
+	GLint totalExtensions;
+	glGetIntegerv(GL_NUM_EXTENSIONS, &totalExtensions);
+
+	for (GLint i = 0; i < totalExtensions; i++)
+	{
+		std::cout << "Extension #" << i << " : "
+				  << reinterpret_cast<const char*>(glGetStringi(GL_EXTENSIONS, i)) << std::endl;
+	}
 }
 
 void Screen::Shutdown()

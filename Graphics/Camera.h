@@ -1,24 +1,55 @@
 #pragma once
 
-#include <glm.hpp>
 #include "glad.h"
+#include "Transform.h"
+
+#include <glm.hpp>
 
 class Camera
 {
 
 public:
 
-	Camera();
-	~Camera();
+	 Camera();
+	 virtual ~Camera() = 0 {};
 
 public:
 
-	void Update(float deltaTime);
+	void RotateX(float offsetY);
+	void RotateY(float offsetX);
 
-private:
+	void MoveUp();
+	void MoveDown();
+	void MoveLeft();
+	void MoveRight();
+	void MoveForward();
+	void MoveBackwards();
 
-	glm::vec3 m_position;
-	GLuint m_uniformIDView;
-	GLuint m_uniformIDProjection;
+public:
+
+	void SetSpeed(float speed);
+	void SetSensitivity(float sensitivity);
+	void SetPosition(float x, float y, float z);
+	void SetRotation(float pitch, float yaw, float roll);
+
+protected:
+
+	virtual void Update(float deltaTime) = 0;
+	virtual void HandleInput() = 0;
+
+protected:
+
+	float m_moveSpeed;
+	float m_sensitivity;
+
+	glm::vec3 m_up;
+	glm::vec3 m_right;
+	glm::vec3 m_forward;
+	glm::vec3 m_worldUp;
+	glm::vec3 m_direction;
+
+	Transform m_transform;
+	glm::mat4 m_view;
+
 };
 

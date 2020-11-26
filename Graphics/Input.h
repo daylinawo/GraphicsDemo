@@ -2,7 +2,7 @@
 
 #define SDL_MOUSE_NONE 0
 
-
+#include <glm.hpp>
 #include <SDL.h>
 
 class Input
@@ -11,7 +11,6 @@ class Input
 public:
 
 	static Input* Instance();
-
 
 public:
 
@@ -26,10 +25,10 @@ public:
 	bool IsMouseClicked(int mouseButton);
 
 	char GetKey();
-	int GetMousePositionX();
-	int GetMousePositionY();
-	int GetMouseMotionX();
-	int GetMouseMotionY();
+
+	const glm::vec2& GetMousePosition();
+	const glm::vec2& GetMouseMotion();
+	const glm::vec2& GetMouseWheel();
 
 private:
 
@@ -40,17 +39,14 @@ private:
 private:
 
 	char m_key;
+	int m_mouseButton;
 
 	bool m_isKeyPressed;
 	bool m_isWindowClosed;
 	bool m_isMouseClicked;
 
-	int m_mousePositionX;
-	int m_mousePositionY;
-	int m_mouseMotionX;
-	int m_mouseMotionY;
-
-	int m_mouseButton;
-
+	glm::vec2 m_mousePosition;
+	glm::vec2 m_mouseMotion;
+	glm::vec2 m_mouseWheel;
 };
 

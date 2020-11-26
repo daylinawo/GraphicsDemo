@@ -1,9 +1,15 @@
-#pragma once
+#ifndef APP_H
+#define APP_H
 
-#include "Input.h"
-#include "Pipeline.h"
-#include "Renderer.h"
-#include "Screen.h"
+#include "Cube.h"
+#include "Grid.h"
+#include "Quad.h"
+#include "FPSCamera.h"
+#include "OrthoCamera.h"
+#include "Light.h"
+#include "Skybox.h"
+
+#include <vector>
 
 class App
 {
@@ -14,7 +20,8 @@ public:
 public:
 
 	bool Initialize();
-	void Run();
+	void Update();
+	void Draw();
 	void Exit();
 
 public:
@@ -22,8 +29,24 @@ public:
 	bool IsRunning();
 
 private:
-	Renderer* m_renderer;
-	bool m_isRunning;
+
+	bool Setup();
+
+private:
+
 	int m_lastTime;
+	bool m_isRunning;
+
+	Grid* m_grid;
+	Light* m_light;
+	Skybox* m_skybox;
+
+	Quad* m_floor;
+	std::vector<Cube*> m_boxes;
+
+	FPSCamera* m_3Dcamera;
+	OrthoCamera* m_2DCamera;
+
 };
 
+#endif // !APP_H
