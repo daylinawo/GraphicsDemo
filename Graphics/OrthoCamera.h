@@ -9,14 +9,16 @@ class OrthoCamera : public Camera
 public:
 
 	OrthoCamera();
-	~OrthoCamera();
+	~OrthoCamera() {};
 
 public:
 
-	void Update(float deltaTime);
-	void HandleInput();
+	virtual void Update(float deltaTime);
+	virtual void Draw(bool isSkybox = false);
 
 private:
+	
+	virtual bool HandleInput();
 
 };
 

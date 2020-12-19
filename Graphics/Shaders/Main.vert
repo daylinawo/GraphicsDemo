@@ -1,12 +1,12 @@
 #version 460
 
-in vec3 vertexIn;
-in vec3 colorIn;
-in vec2 textureIn;
-in vec3 normalIn;
+layout (location = 0) in vec3 vertexIn;
+layout (location = 1) in vec4 colorIn;
+layout (location = 2) in vec2 textureIn;
+layout (location = 3) in vec3 normalIn;
 
 out vec3 vertexOut;
-out vec3 colorOut;
+out vec4 colorOut;
 out vec2 textureOut;
 out vec3 normalOut;
 

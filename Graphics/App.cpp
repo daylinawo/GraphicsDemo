@@ -1,20 +1,25 @@
 #include "App.h"
 #include "Input.h"
 #include "Pipeline.h"
+#include "Primitives.h"
 #include "Screen.h"
 #include "Utility.h"
-#include <iostream>
+
 #include <map>
 #include <glm.hpp>
+#include <iostream>
 
 App::App()
 {
+	m_HUD = nullptr;
 	m_grid = nullptr;
-	m_light = nullptr;
-	m_3Dcamera = nullptr;
-	m_2DCamera = nullptr;
-	m_floor = nullptr;
+	m_room = nullptr;
+	m_UICam = nullptr;
+	m_laptop = nullptr;
 	m_skybox = nullptr;
+	m_mainCam = nullptr;
+	m_metalBox = nullptr;
+	m_lightManager = nullptr;
 
 	m_isRunning = false;
 	m_lastTime = SDL_GetTicks();
@@ -31,61 +36,67 @@ bool App::Initialize()
 
 	m_isRunning = true;
 
-	Screen::Instance()->SetScreen3D();
+	Primitives::Instance()->CreateObjects();
 
 	//camera
-	m_3Dcamera = new FPSCamera();
-	m_3Dcamera->SetSpeed(18.0f);
-	m_3Dcamera->SetSensitivity(0.03f);
-	m_3Dcamera->SetPosition(0.0f, 15.0f, 20.0f);
-	m_3Dcamera->SetRotation(-30.0f, -90.0f, 0.0f);
+	m_mainCam = new FPSCamera();
+	m_mainCam->SetSpeed(15.0f);
+	m_mainCam->SetSensitivity(0.03f);
+	m_mainCam->SetPosition(0.0f, 15.0f, 35.0f);
+	m_mainCam->SetRotation(-30.0f, -90.0f, 0.0f);
 
-	m_2DCamera = nullptr;
+	m_UICam = new OrthoCamera();
+
+	//HUD
+
+	m_HUD = new HUD();
+	m_HUD->Create();
 
 	//grid
 	m_grid = new Grid();
 	m_grid->CreateGrid();
 	m_grid->CreateAxes();
 
-	//point light
-	m_light = new Light();
-	m_light->Create();
-	m_light->SetAmbient(1.0f, 1.0f, 1.0f);
-	m_light->SetDiffuse(1.0f, 1.0f, 1.0f);
-	m_light->SetSpecular(1.0f, 1.0f, 1.0f);
-	m_light->SetAttenuation(1.0f, 0.027f, 0.0028f);
-
 	//skybox
 	m_skybox = new Skybox();
 	m_skybox->Create();
-	m_skybox->Scale(70.0f, 70.0f, 70.0f);
 
-	m_skybox->GetMaterial().SetAmbient(0.24725f, 0.1995f, 0.0745f);
-	m_skybox->GetMaterial().SetDiffuse(0.75164f, 0.60648f, 0.22648f);
-	m_skybox->GetMaterial().SetSpecular(0.628281f, 0.555802f, 0.366065f);
-	m_skybox->GetMaterial().SetShininess(0.4f);
+	//room
+	m_room = new Room();
+	m_room->Create(30.0f, 5.0f, 40.0f);
 
-	//floor
-	m_floor = new Quad();
-	m_floor->Create(30.0f, 30.0f, 30.0f);
-	m_floor->Translate(0.0f, 1.0f, 0.0f);
-	m_floor->Rotate(90.0f, 0.0f, 0.0f);
+	//lights
+	m_lightManager = new LightManager();
 
-	m_floor->GetMaterial().SetAmbient(0.25f, 0.25f, 0.25f);
-	m_floor->GetMaterial().SetDiffuse(0.4f, 0.4f, 0.4f);
-	m_floor->GetMaterial().SetSpecular(0.774597f, 0.774597f, 0.774597f);
-	m_floor->GetMaterial().SetShininess(1.0f);
+	m_lightManager->CreateDirectionalLight(0.1f, 0.1f, 0.1f);
+	m_lightManager->AddPointLight("RedLight", 20.0f, 8.0f, -10.0f, 1.0f, 0.0f, 0.0f);
+	m_lightManager->AddPointLight("WhiteLight", 5.0f, 8.0f, 20.0f, 1.0f, 1.0f, 1.0f);
+	m_lightManager->AddPointLight("GreenLight", -5.0f, 8.0f, -20.0f, 0.0f, 1.0f, 0.0);
+	m_lightManager->AddPointLight("BlueLight", -20.0f, 8.0f, -10.0f, 0.0f, 0.0f, 1.0f);
 
-	//box
-	m_boxes.push_back(new Cube());
-	m_boxes.back()->Create();
-	m_boxes.back()->Translate(-3.0f, 8.0f, 0.0f);	
-	m_boxes.back()->Rotate(30.0f, 10.0f, 0.0f);	
+	//crate 1
+	m_crates.push_back(new Crate());
+	m_crates.back()->Create();
+	m_crates.back()->GetTransform().Translate(-3.0f, 4.0f, 0.0f);
+	m_crates.back()->GetTransform().Rotate(5.0f, 5.0f, 5.0f);
 
-	m_boxes.back()->GetMaterial().SetAmbient(0.24725f, 0.1995f, 0.0745f);
-	m_boxes.back()->GetMaterial().SetDiffuse(0.75164f, 0.60648f, 0.22648f);
-	m_boxes.back()->GetMaterial().SetSpecular(0.628281f, 0.555802f, 0.366065f);
-	m_boxes.back()->GetMaterial().SetShininess(0.4f);
+	//crate 2
+	m_crates.push_back(new Crate());
+	m_crates.back()->Create();
+	m_crates.back()->GetTransform().Translate(11.0f, 2.0f, -30.0f);
+	m_crates.back()->GetTransform().Rotate(0.0f, 45.0f, 0.0f);
+	m_crates.back()->GetTransform().Scale(1.0f, 1.0f, 1.0f);	
+	
+	//metalbox
+	m_metalBox = new MetalBox();
+	m_metalBox->Create();
+	m_metalBox->GetTransform().Translate(5.0f, 1.5f, 20.0f);	
+	
+	//laptop
+	m_laptop = new Laptop((*m_mainCam), (*m_lightManager));
+	m_laptop->Create(3.0f);
+	m_laptop->GetTransform().Translate(5.0f, 2.5f, 20.0f);
+	m_laptop->GetTransform().Scale(3.0f, 3.0f, 3.0f);
 
 	return true;
 }
@@ -94,41 +105,47 @@ bool App::Initialize()
 //*******************************************************************
 void App::Update()
 {
-	float deltaTime = (SDL_GetTicks() - m_lastTime) / 1000.0f;
+	static bool isKeyPressed = false;
+
+	float deltaTime = (SDL_GetTicks() - m_lastTime) * 0.001f;
 	m_lastTime = SDL_GetTicks();
 
 	Input::Instance()->Update();
 
-	static bool isKeyPressed = false;
+	// -----------------------------------------
+	// update objects
+	// -----------------------------------------
+	
+	m_HUD->Update(deltaTime);
+	m_UICam->Update(deltaTime);
+	m_mainCam->Update(deltaTime);
 
-	//toggle outline mode on/off
-	if (Input::Instance()->IsKeyPressed(SDL_SCANCODE_O) && !isKeyPressed)
-	{
-		(Screen::Instance()->IsOutlineMode()) ? Screen::Instance()->SetOutlineMode(false) :
-												Screen::Instance()->SetOutlineMode(true);
-	}
+	m_room->Update(deltaTime);
+	m_laptop->Update(deltaTime);
+	m_metalBox->Update(deltaTime);
+	m_lightManager->Update(deltaTime);
 
-	//change field of view
-	if (Input::Instance()->GetMouseWheel().y)
-	{
-		Screen::Instance()->SetZoom(Input::Instance()->GetMouseWheel().y);
-	}
-
-	//track key press so that action is only performed once per key down
-	isKeyPressed = Input::Instance()->IsKeyPressed(SDL_SCANCODE_O);
-
-	m_isRunning = !(Input::Instance()->IsWindowClosed());
-
-	m_3Dcamera->Update(deltaTime);
-	m_light->Update(deltaTime);
-	m_skybox->Update(deltaTime);
-	m_floor->Update(deltaTime);
-
-	for (auto it = m_boxes.begin(); it != m_boxes.end(); it++)
+	for (auto it = m_crates.begin(); it != m_crates.end(); it++)
 	{
 		(*it)->Update(deltaTime);
 	}
 
+	// -----------------------------------------
+	// key press stuff
+	// -----------------------------------------
+
+	if (Input::Instance()->IsKeyPressed(SDL_SCANCODE_O) && !isKeyPressed)
+	{
+		//toggle outline mode on/off
+		(Screen::Instance()->IsOutlineMode()) ? Screen::Instance()->SetOutlineMode(false) :
+												Screen::Instance()->SetOutlineMode(true);
+	}
+
+	//prevent key press state being read multiple times per second
+	isKeyPressed = Input::Instance()->IsKeyPressed(SDL_SCANCODE_O);
+
+	//use Q key to quit
+	m_isRunning = !(Input::Instance()->IsKeyPressed(SDL_SCANCODE_Q));
 }
 //*******************************************************************
 // render objects on screen
@@ -138,22 +155,52 @@ void App::Draw()
 	//clear the frame buffer
 	Screen::Instance()->ClearBuffer();
 
+	// -----------------------------------------
+	// draw skybox
+	// -----------------------------------------
+
+	//render skybox using skybox shader
+	Pipeline::Instance()->UseShader("SKYBOX_SHADER");
+	Screen::Instance()->SetScreen3D();
+
+	//disable depth testing so skybox stays in the background
+	glDisable(GL_DEPTH_TEST);
+
+	m_mainCam->Draw(true);
+	m_skybox->Draw();
+
+	glEnable(GL_DEPTH_TEST);
+
+	// -----------------------------------------
+	// draw 3D scene objects
+	// -----------------------------------------
+
+	//render all other scene objects using main shader
+	Pipeline::Instance()->UseShader("MAIN_SHADER");
+	Screen::Instance()->SetScreen3D();
+
+	m_mainCam->Draw();
+
+	m_room->Draw();
+	m_laptop->Draw();
+	m_metalBox->Draw();
+	m_lightManager->Draw();
+
 	//m_grid->DrawGrid();
 	//m_grid->DrawAxes();
 
-	//turn on depth testing so objects are rendered in the correct order
-	glDisable(GL_DEPTH_TEST);
-	m_skybox->Draw();
-	//turn on depth testing so objects are rendered in the correct order
-	glEnable(GL_DEPTH_TEST);
-	m_light->Draw();
-	m_floor->Draw();
-
-	for (auto it = m_boxes.begin(); it != m_boxes.end(); it++)
+	for (auto it = m_crates.begin(); it != m_crates.end(); it++)
 	{
 		(*it)->Draw();
 	}
+	
+	// -----------------------------------------
+	// draw 2D scene objects
+	// -----------------------------------------
 
+	m_UICam->Draw();
+
+	m_HUD->Draw();
 
 	Screen::Instance()->SwapBuffer();
 }
@@ -166,38 +213,31 @@ bool App::Setup()
 
 	Utility::LoadConfig("Assets/Files/Settings.ini", "BASIC", config, '=');
 
-	Screen::Instance()->Initialize(config["WindowTitle"], std::stoi(config["ScreenWidth"]),
-								   std::stoi(config["ScreenHeight"]), std::stoi(config["Fullscreen"]),
-								   std::stoi(config["CoreMode"]), std::stoi(config["OpenGLScreen"]));
+	Screen::Instance()->Initialize(config["WindowTitle"], 
+								   std::stoi(config["ScreenWidth"]),
+								   std::stoi(config["ScreenHeight"]),
+								   std::stoi(config["Fullscreen"]),
+								   std::stoi(config["CoreMode"]));
 
 	Screen::Instance()->SetScreenColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-	if (!Pipeline::Instance()->CreateProgram())
+	//create main shader program
+	if (!Pipeline::Instance()->CreateShaderID("Shaders/Main.vert", "Shaders/Main.frag", "MAIN_SHADER"))
 	{
 		return false;
-	}
+	}	
 
-	if (!Pipeline::Instance()->CreateShaders())
+	//create skybox shader program
+	if (!Pipeline::Instance()->CreateShaderID("Shaders/Skybox.vert", "Shaders/Skybox.frag", "SKYBOX_SHADER"))
 	{
 		return false;
-	}
+	}	
+	
+	Pipeline::Instance()->UseShader("SKYBOX_SHADER");
+	Pipeline::Instance()->BindUniforms();
 
-	if (!Pipeline::Instance()->CompileShaders("Shaders/Main.vert", Pipeline::ShaderType::VERTEX))
-	{
-		return false;
-	}
-
-	if (!Pipeline::Instance()->CompileShaders("Shaders/Main.frag", Pipeline::ShaderType::FRAGMENT))
-	{
-		return false;
-	}
-
-	Pipeline::Instance()->AttachShaders();
-
-	if (!Pipeline::Instance()->LinkProgram())
-	{
-		return false;
-	}
+	Pipeline::Instance()->UseShader("MAIN_SHADER");
+	Pipeline::Instance()->BindUniforms();
 
 	return true;
 }
@@ -211,29 +251,33 @@ bool App::IsRunning()
 //*******************************************************************
 void App::Exit()
 {
-	Pipeline::Instance()->DetachShaders();
-	Pipeline::Instance()->DestroyShaders();
-	Pipeline::Instance()->DestroyProgram();
-	Screen::Instance()->Shutdown();
+	m_room->Destroy();
+	m_skybox->Destroy();
+	m_laptop->Destroy();
+	m_metalBox->Destroy();
+	m_lightManager->DestroyAllLights();
 
-	delete m_3Dcamera;
-	delete m_2DCamera;
 	delete m_grid;
+	delete m_room;
 	delete m_skybox;
-	delete m_floor;
+	delete m_laptop;
+	delete m_metalBox;
+	delete m_mainCam;
+	delete m_UICam;
+	delete m_lightManager;
 
-	m_3Dcamera = nullptr;
-	m_2DCamera = nullptr;
-	m_grid = nullptr;
-	m_skybox = nullptr;
-	m_floor = nullptr;
-
-	for (auto it = m_boxes.begin(); it != m_boxes.end(); it++)
+	for (auto it = m_crates.begin(); it != m_crates.end(); it++)
 	{
 		(*it)->Destroy();
 		delete (*it);
 	}
+	
+	m_crates.clear();	
 
-	m_boxes.clear();
+	Primitives::Instance()->DestroyBuffers();
+	Pipeline::Instance()->DetachShaders();
+	Pipeline::Instance()->DestroyShaders();
+	Pipeline::Instance()->DestroyProgram();
+	Screen::Instance()->Shutdown();
 }
 

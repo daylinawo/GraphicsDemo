@@ -17,8 +17,7 @@ public:
 public:
 
 	void Shutdown();
-	bool Initialize(const std::string& windowTitle, int width, int height,
-					bool fullscreen = false, bool coreMode = false, bool openGLScreen = true);
+	bool Initialize(const std::string& windowTitle, int width, int height, bool fullscreen, bool coreMode = false);
 
 	void ClearBuffer();
 	void SwapBuffer();
@@ -28,21 +27,14 @@ public:
 
 public:
 
+	glm::vec2 GetResolution();
+
 	void SetScreenColor(float r, float g, float b, float a);
 	void SetOutlineMode(bool flag);
 	void SetScreen2D();
-	void SetScreen3D(float fov = 45.0f, float nearClip = 0.1f, float farClip = 500.0f);
-	void SetZoom(float fov);
-
-	int GetWidth();
-	int GetHeight();
+	void SetScreen3D(GLfloat fov = 45.0f, GLfloat nearClip = 0.1f, GLfloat = 500.0f);
 
 	bool IsOutlineMode();
-
-private:
-
-	bool SetupWindow(const std::string& windowTitle, int width,
-					 int height, bool fullscreen, bool openGLScreen);
 
 private:
 
@@ -54,10 +46,6 @@ private:
 
 	int m_width;
 	int m_height;
-
-	float m_fov;
-	float m_nearClip;
-	float m_farClip;
 	
 	bool m_isOutlineMode;
 

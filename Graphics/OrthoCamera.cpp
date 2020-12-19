@@ -13,46 +13,37 @@ OrthoCamera::OrthoCamera()
 
 void OrthoCamera::Update(float deltaTime)
 {
-
-	HandleInput();
-
-	//move camera by a velocity
-	m_transform.Translate(m_direction * m_moveSpeed * deltaTime);
-
-	glm::vec3 newPos = m_transform.GetPosition();
-
-	m_view = glm::lookAt(newPos, newPos + m_forward, m_up);
-
-	Pipeline::Instance()->SendUniformData("view", m_view);
-
+	m_view = glm::mat4(1.0f);	
 }
 
-void OrthoCamera::HandleInput()
+void OrthoCamera::Draw(bool isSkybox)
 {
+	Pipeline::Instance()->SendUniformData("view", m_view);
+	Pipeline::Instance()->SendUniformData("cameraPosition", m_transform.GetPosition());
+}
 
+bool OrthoCamera::HandleInput()
+{
 	if (Input::Instance()->IsKeyPressed(SDL_SCANCODE_UP))
 	{
 		MoveUp();
+		return true;
 	}
 	else if (Input::Instance()->IsKeyPressed(SDL_SCANCODE_LEFT))
 	{
 		MoveLeft();
+		return true;
 	}
 	else if (Input::Instance()->IsKeyPressed(SDL_SCANCODE_DOWN))
 	{
 		MoveDown();
+		return true;
 	}
 	else if (Input::Instance()->IsKeyPressed(SDL_SCANCODE_RIGHT))
 	{
 		MoveRight();
-	}
-	else
-	{
-		m_direction = glm::vec3(0.0f);
+		return true;
 	}
 
-}
-
-OrthoCamera::~OrthoCamera()
-{
+	return false;
 }

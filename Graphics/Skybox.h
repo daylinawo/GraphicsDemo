@@ -3,13 +3,15 @@
 
 #include "Object.h"
 #include "Material.h"
+#include "Buffer.h"
+#include "Texture.h"
 
 class Skybox : public Object
 {
 public:
 
 	Skybox();
-	~Skybox();
+	~Skybox() {};
 
 public:
 
@@ -22,6 +24,9 @@ public:
 	void Update(float deltaTime);
 
 private:
+
+	Buffer m_buffer;
+	Texture m_texture;
 
 };
 

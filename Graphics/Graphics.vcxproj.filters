@@ -46,6 +46,24 @@
     <Filter Include="Header Files\Components">
       <UniqueIdentifier>{2e803ae0-72f1-4c6c-842e-d6651a72f5d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Objects\Lights">
+      <UniqueIdentifier>{db437e79-622b-42b6-ab7f-bdc7693b793c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects\GameObjects">
+      <UniqueIdentifier>{2d996880-1855-4dd8-a1fc-fa4ed1236918}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects\Cameras">
+      <UniqueIdentifier>{296e0470-59f4-4033-b7d6-880a3070b27b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects\Lights">
+      <UniqueIdentifier>{f838fb95-e0b5-4277-85c3-04ff00965566}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects\GameObjects">
+      <UniqueIdentifier>{da3b1a42-5875-49ea-aac0-eac2493802a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects\Cameras">
+      <UniqueIdentifier>{6c607213-0f12-44a4-b3f4-b6c2ce7a44bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Input.cpp">
@@ -69,26 +87,8 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files\Main</Filter>
     </ClCompile>
-    <ClCompile Include="Quad.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Cube.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Grid.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="FPSCamera.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Transform.cpp">
       <Filter>Source Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="OrthoCamera.cpp">
-      <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files\Components</Filter>
@@ -102,11 +102,59 @@
     <ClCompile Include="Material.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Skybox.cpp">
-      <Filter>Source Files\Objects</Filter>
+    <ClCompile Include="Primitives.cpp">
+      <Filter>Source Files\Managers</Filter>
     </ClCompile>
     <ClCompile Include="Light.cpp">
-      <Filter>Source Files\Objects</Filter>
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp">
+      <Filter>Source Files\Objects\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>Source Files\Objects\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>Source Files\Objects\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Crate.cpp">
+      <Filter>Source Files\Objects\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Laptop.cpp">
+      <Filter>Source Files\Objects\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="MetalBox.cpp">
+      <Filter>Source Files\Objects\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>Source Files\Objects\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Source Files\Objects\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Source Files\Objects\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="FPSCamera.cpp">
+      <Filter>Source Files\Objects\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="OrthoCamera.cpp">
+      <Filter>Source Files\Objects\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Source Files\Objects\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="HUD.cpp">
+      <Filter>Source Files\Objects\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -125,29 +173,11 @@
     <ClInclude Include="App.h">
       <Filter>Header Files\Main</Filter>
     </ClInclude>
-    <ClInclude Include="Quad.h">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Grid.h">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Cube.h">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="FPSCamera.h">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="OrthoCamera.h">
-      <Filter>Header Files\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Buffer.h">
       <Filter>Header Files\Components</Filter>
@@ -158,11 +188,59 @@
     <ClInclude Include="Material.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Skybox.h">
-      <Filter>Header Files\Objects</Filter>
+    <ClInclude Include="Primitives.h">
+      <Filter>Header Files\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Light.h">
-      <Filter>Header Files\Objects</Filter>
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>Header Files\Objects\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>Header Files\Objects\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>Header Files\Objects\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Crate.h">
+      <Filter>Header Files\Objects\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="MetalBox.h">
+      <Filter>Header Files\Objects\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Laptop.h">
+      <Filter>Header Files\Objects\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>Header Files\Objects\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Header Files\Objects\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Header Files\Objects\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Header Files\Objects\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="OrthoCamera.h">
+      <Filter>Header Files\Objects\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="FPSCamera.h">
+      <Filter>Header Files\Objects\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>Header Files\Objects\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -170,6 +248,12 @@
       <Filter>Header Files\Shaders</Filter>
     </None>
     <None Include="Shaders\Main.frag">
+      <Filter>Header Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Skybox.frag">
+      <Filter>Header Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Skybox.vert">
       <Filter>Header Files\Shaders</Filter>
     </None>
   </ItemGroup>

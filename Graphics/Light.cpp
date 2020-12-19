@@ -1,13 +1,14 @@
 #include "Light.h"
-#include "Input.h"
 #include "Pipeline.h"
 
-const float INTENSITY_RATE = 1.5f;
-const float MOVE_SPEED = 10.0f;
+GLuint Light::s_totalLights = 0;
 
 Light::Light()
 {
+	m_lightID = -1;
+	
 	m_isDirty = false;
+	m_isActive = true;
 
 	m_color = glm::vec3(0.0f);
 	m_ambient = glm::vec3(0.0f);
@@ -18,69 +19,34 @@ Light::Light()
 	m_attenuationLinear = 0.0f;
 	m_attenuationQuad = 0.0f;
 
-	static bool isBound = false;
-
-	if (!isBound)
-	{
-		Pipeline::Instance()->BindUniform("isLit");
-		Pipeline::Instance()->BindUniform("light.position");
-		Pipeline::Instance()->BindUniform("light.ambient");
-		Pipeline::Instance()->BindUniform("light.diffuse");
-		Pipeline::Instance()->BindUniform("light.specular");
-		Pipeline::Instance()->BindUniform("light.attenuationConst");
-		Pipeline::Instance()->BindUniform("light.attenuationLinear");
-		Pipeline::Instance()->BindUniform("light.attenuationQuad");
-
-		isBound = true;
-	}
+	m_lightType = LightType::DIRECTIONAL;
 }
-
-//*******************************************************************
-// create default light object
-//*******************************************************************
-void Light::Create()
+bool& Light::IsActive()
 {
-	m_ambient = glm::vec3(1.0f);
-	m_diffuse = glm::vec3(1.0f);
-	m_specular = glm::vec3(1.0f);
-
-	m_attenuationConst = 1.0f;
-	m_attenuationLinear = 0.0f;
-	m_attenuationQuad = 0.0f;
-
-	//create a visual representation of light source
-	GLfloat vertices[] = 
-	{ 
-		-1.0f, 1.0f, 0.0f,
-		 1.0f, 1.0f, 0.0f,
-		 1.0f, -1.0f, 0.0f,
-		-1.0f, -1.0f, 0.0f
-	};
-
-	GLfloat colors[] = 
-	{ 
-		m_ambient.r, m_ambient.g, m_ambient.b,
-		m_ambient.r, m_ambient.g, m_ambient.b,
-		m_ambient.r, m_ambient.g, m_ambient.b,
-		m_ambient.r, m_ambient.g, m_ambient.b
-	};
-
-	GLuint indices[] = { 0, 1, 3, 3, 1, 2 };
-
-	m_buffer.CreateBuffers(6, true);
-	
-	m_buffer.BindEBO();
-	m_buffer.BindVBO(Buffer::VBOType::VERTEX, "vertexIn", Buffer::ComponentType::XYZ, Buffer::DataType::FLOAT);
-	m_buffer.BindVBO(Buffer::VBOType::COLOR, "colorIn", Buffer::ComponentType::RGB, Buffer::DataType::FLOAT);
-
-	m_buffer.SetEBOData(indices, sizeof(indices), Buffer::DataMode::STATIC);
-	m_buffer.SetVBOData(Buffer::VBOType::VERTEX, vertices, sizeof(vertices), Buffer::DataMode::STATIC);
-	m_buffer.SetVBOData(Buffer::VBOType::COLOR, colors, sizeof(colors), Buffer::DataMode::STATIC);
-
-	m_transform.Translate(0.0f, 7.0f, 1.0f);
-	m_transform.SetScale(0.25f, 0.25f, 0.0f);
+	return m_isActive;
 }
+//*******************************************************************
+// send data to shader
+//*******************************************************************
+void Light::SendToShader()
+{
+	Pipeline::Instance()->SendUniformData("isLit", false);
+	Pipeline::Instance()->SendUniformData("isTextured", false);
+	Pipeline::Instance()->SendUniformData("model", m_transform.GetMatrix());
 
+	std::string lightID = std::to_string(m_lightID);
+
+	Pipeline::Instance()->SendUniformData("lights[" + lightID + "].position", m_transform.GetPosition());
+	Pipeline::Instance()->SendUniformData("lights[" + lightID + "].ambient", m_ambient);
+	Pipeline::Instance()->SendUniformData("lights[" + lightID + "].diffuse", m_diffuse);
+	Pipeline::Instance()->SendUniformData("lights[" + lightID + "].specular", m_specular);
+	Pipeline::Instance()->SendUniformData("lights[" + lightID + "].attenuationConst", m_attenuationConst);
+	Pipeline::Instance()->SendUniformData("lights[" + lightID + "].attenuationLinear", m_attenuationLinear);
+	Pipeline::Instance()->SendUniformData("lights[" + lightID + "].attenuationQuad", m_attenuationQuad);
+	Pipeline::Instance()->SendUniformData("lights[" + lightID + "].type", m_lightType);
+	Pipeline::Instance()->SendUniformData("lights[" + lightID + "].isActive", m_isActive);
+
+}
 //*******************************************************************
 // set ambient color with vec3
 //*******************************************************************
@@ -146,81 +112,11 @@ void Light::SetAttenuation(float attenuationConst, float attenuationLinear, floa
 	m_attenuationLinear = attenuationLinear;
 	m_attenuationQuad = attenuationQuad;
 }
-
 //*******************************************************************
-// update light object logic
+// set object position
 //*******************************************************************
-void Light::Update(float deltaTime)
+void Light::SetPosition(float x, float y, float z)
 {
-	float moveBy = MOVE_SPEED * deltaTime;
-
-	if (Input::Instance()->IsKeyPressed(SDL_SCANCODE_W))
-	{
-		m_transform.Translate(0.0f, 0.0f, -moveBy);
-	}
-	else if (Input::Instance()->IsKeyPressed(SDL_SCANCODE_A))
-	{
-		m_transform.Translate(-moveBy, 0.0f, 0.0f);
-	}
-	else if (Input::Instance()->IsKeyPressed(SDL_SCANCODE_S))
-	{
-		m_transform.Translate(0.0f, 0.0f, moveBy);
-	}
-	else if (Input::Instance()->IsKeyPressed(SDL_SCANCODE_D))
-	{
-		m_transform.Translate(moveBy, 0.0f, 0.0f);
-	}
-
-	if (m_isDirty)
-	{
-		GLfloat colors[] =
-		{
-			m_ambient.r, m_ambient.g, m_ambient.b,
-			m_ambient.r, m_ambient.g, m_ambient.b,
-			m_ambient.r, m_ambient.g, m_ambient.b,
-			m_ambient.r, m_ambient.g, m_ambient.b
-		};
-
-		m_buffer.SetVBOData(Buffer::VBOType::COLOR, colors, sizeof(colors), Buffer::DataMode::STATIC);
-
-		m_isDirty = false;
-	}
+	m_transform.SetPosition(x, y, z);
 }
 
-//*******************************************************************
-// draw light object
-//*******************************************************************
-void Light::Draw()
-{
-	SendToShader();
-
-	m_buffer.Draw(Buffer::RenderMode::TRIANGLES);
-}
-
-//*******************************************************************
-// send data to shader
-//*******************************************************************
-void Light::SendToShader()
-{
-
-	Pipeline::Instance()->SendUniformData("isLit", false);
-	Pipeline::Instance()->SendUniformData("isTextured", false);
-	Pipeline::Instance()->SendUniformData("model", m_transform.GetMatrix());
-
-	Pipeline::Instance()->SendUniformData("light.position", m_transform.GetPosition());
-	Pipeline::Instance()->SendUniformData("light.ambient", m_ambient);
-	Pipeline::Instance()->SendUniformData("light.diffuse", m_diffuse);
-	Pipeline::Instance()->SendUniformData("light.specular", m_specular);
-	Pipeline::Instance()->SendUniformData("light.attenuationConst", m_attenuationConst);
-	Pipeline::Instance()->SendUniformData("light.attenuationLinear", m_attenuationLinear);
-	Pipeline::Instance()->SendUniformData("light.attenuationQuad", m_attenuationQuad);
-
-}
-
-//*******************************************************************
-// destroy object
-//*******************************************************************
-void Light::Destroy()
-{
-	m_buffer.DestroyBuffers();
-}

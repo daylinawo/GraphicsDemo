@@ -3,10 +3,11 @@
 #include <sstream>
 #include <iostream>
 
-#define FILE_HEADER_IDENTIFIER 0x005B
-#define FILE_STATUS_NONE 0x0000
-#define FILE_STATUS_SEARCH 0x0001
-#define FILE_STATUS_COPY 0x0002
+const char HEADER_TOKEN = '[';
+
+#define FILE_CLOSE 0x0000
+#define FILE_SEARCH 0x0001
+#define FILE_COPY 0x0002
 
 void Utility::ParseString(const std::string& str, char token, std::vector<std::string>& buffer)
 {
@@ -55,38 +56,36 @@ void Utility::LoadFileContents(const std::string& path, std::string& buffer)
 
 void Utility::LoadFileContents(const std::string& path, std::string& buffer, const std::string& header)
 {
+	bool isHeader = false;
+	uint16_t fileCommand = FILE_SEARCH;
 	std::ifstream file(path, std::ios_base::in);
-
-	uint16_t fileReadStatus = FILE_STATUS_SEARCH;
 
 	if (file.is_open())
 	{
 		std::string line;
 
-		while (std::getline(file, line))
+		while (std::getline(file, line) && fileCommand != FILE_CLOSE)
 		{
-			switch (fileReadStatus)
+			isHeader = (line[0] == HEADER_TOKEN);
+
+			switch (fileCommand)
 			{
-				case FILE_STATUS_SEARCH:
+				case FILE_SEARCH:
 				{
-					if (line[0] == static_cast<char>(FILE_HEADER_IDENTIFIER))
+					if (isHeader)
 					{
 						if (line.find(header) != std::string::npos) 
-							fileReadStatus = FILE_STATUS_COPY;
+							fileCommand = FILE_COPY;
 					}
 
 					break;
 				}
-				case FILE_STATUS_COPY:
+				case FILE_COPY:
 				{
-					if (line[0] == static_cast<char>(FILE_HEADER_IDENTIFIER))
-					{
-						fileReadStatus = FILE_STATUS_SEARCH;
-					}
+					if (isHeader)
+						fileCommand = FILE_CLOSE;
 					else
-					{
 						buffer += line + "\n";
-					}
 
 					break;
 				}
@@ -136,6 +135,22 @@ float Utility::Clamp(float value, float min, float max)
 	}
 
 	return value;
+}
+
+glm::vec3 Utility::Direction(glm::vec3 destination, glm::vec3 source)
+{
+	return glm::normalize(destination - source);
+}
+
+float Utility::Distance(const glm::vec3& source, const glm::vec3& destination)
+{
+	//1. subtract dest from source
+	glm::vec3 result = source - destination;
+
+	//2, do pythag on the result
+	return sqrt((result.x * result.x) +
+				(result.y * result.y) +
+				(result.z * result.z));
 }
 
 void Utility::Log(const std::string& message)

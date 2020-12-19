@@ -21,17 +21,17 @@ void Grid::CreateGrid()
 	GLuint offset = 0;
 
 	//total vertices = grid size * total quadrants * 2 vertices
-	m_gridBuffer.CreateBuffers(SIZE * QUADRANTS * 2, false);
+	m_gridBuffer.CreateBuffers("GRID", SIZE * QUADRANTS * 2, false);
 
-	m_gridBuffer.BindVBO(Buffer::VBOType::VERTEX, "vertexIn", Buffer::ComponentType::XYZ, Buffer::DataType::FLOAT);
-	m_gridBuffer.BindVBO(Buffer::VBOType::COLOR, "colorIn", Buffer::ComponentType::RGB, Buffer::DataType::FLOAT);
+	m_gridBuffer.BindVBO(Buffer::VERTEX_VBO, "vertexIn", Buffer::XYZ, Buffer::DataType::FLOAT);
+	m_gridBuffer.BindVBO(Buffer::COLOR_VBO, "colorIn", Buffer::RGB, Buffer::DataType::FLOAT);
 
 	//total size for vertex and color buffers
 	int bufferSize = TOTAL_BYTES_VBO;
 	int size = SIZE;
 
-	m_gridBuffer.SetVBOData(Buffer::VBOType::VERTEX, nullptr, bufferSize, Buffer::DataMode::DYNAMIC);
-	m_gridBuffer.SetVBOData(Buffer::VBOType::COLOR, nullptr, bufferSize, Buffer::DataMode::DYNAMIC);
+	m_gridBuffer.SetVBOData(Buffer::VERTEX_VBO, nullptr, bufferSize, Buffer::DYNAMIC);
+	m_gridBuffer.SetVBOData(Buffer::COLOR_VBO, nullptr, bufferSize, Buffer::DYNAMIC);
 
 	//*****************************************
 	//create grid lines for negative x quadrant
@@ -51,8 +51,8 @@ void Grid::CreateGrid()
 			m_colors.r, m_colors.g, m_colors.b
 		};
 
-		m_gridBuffer.AddVBOData(Buffer::VBOType::VERTEX, vertices, sizeof(vertices), offset);
-		m_gridBuffer.AddVBOData(Buffer::VBOType::COLOR, colors, sizeof(colors), offset);
+		m_gridBuffer.AddVBOData(Buffer::VERTEX_VBO, vertices, sizeof(vertices), offset);
+		m_gridBuffer.AddVBOData(Buffer::COLOR_VBO, colors, sizeof(colors), offset);
 
 		offset += BYTES_PER_LINE;
 	}
@@ -75,8 +75,8 @@ void Grid::CreateGrid()
 			m_colors.r, m_colors.g, m_colors.b
 		};
 
-		m_gridBuffer.AddVBOData(Buffer::VBOType::VERTEX, vertices, sizeof(vertices), offset);
-		m_gridBuffer.AddVBOData(Buffer::VBOType::COLOR, colors, sizeof(colors), offset);
+		m_gridBuffer.AddVBOData(Buffer::VERTEX_VBO, vertices, sizeof(vertices), offset);
+		m_gridBuffer.AddVBOData(Buffer::COLOR_VBO, colors, sizeof(colors), offset);
 
 		offset += BYTES_PER_LINE;
 	}
@@ -99,8 +99,8 @@ void Grid::CreateGrid()
 			m_colors.r, m_colors.g, m_colors.b
 		};
 
-		m_gridBuffer.AddVBOData(Buffer::VBOType::VERTEX, vertices, sizeof(vertices), offset);
-		m_gridBuffer.AddVBOData(Buffer::VBOType::COLOR, colors, sizeof(colors), offset);
+		m_gridBuffer.AddVBOData(Buffer::VERTEX_VBO, vertices, sizeof(vertices), offset);
+		m_gridBuffer.AddVBOData(Buffer::COLOR_VBO, colors, sizeof(colors), offset);
 
 		offset += BYTES_PER_LINE;
 	}
@@ -123,8 +123,8 @@ void Grid::CreateGrid()
 			m_colors.r, m_colors.g, m_colors.b
 		};
 
-		m_gridBuffer.AddVBOData(Buffer::VBOType::VERTEX, vertices, sizeof(vertices), offset);
-		m_gridBuffer.AddVBOData(Buffer::VBOType::COLOR, colors, sizeof(colors), offset);
+		m_gridBuffer.AddVBOData(Buffer::VERTEX_VBO, vertices, sizeof(vertices), offset);
+		m_gridBuffer.AddVBOData(Buffer::COLOR_VBO, colors, sizeof(colors), offset);
 
 		offset += BYTES_PER_LINE;
 	}
@@ -164,14 +164,13 @@ void Grid::CreateAxes()
 		0.0f, 0.0f, 1.0f,
 	};
 
-	m_axesBuffer.CreateBuffers(AXES * 2, false);
+	m_axesBuffer.CreateBuffers("AXES", AXES * 2, false);
 
-	m_axesBuffer.BindVBO(Buffer::VBOType::VERTEX, "vertexIn", Buffer::ComponentType::XYZ, Buffer::DataType::FLOAT);
-	m_axesBuffer.BindVBO(Buffer::VBOType::COLOR, "colorIn", Buffer::ComponentType::RGB, Buffer::DataType::FLOAT);
+	m_axesBuffer.BindVBO(Buffer::VERTEX_VBO, "vertexIn", Buffer::XYZ, Buffer::FLOAT);
+	m_axesBuffer.BindVBO(Buffer::COLOR_VBO, "colorIn", Buffer::RGB, Buffer::FLOAT);
 
-	m_axesBuffer.SetVBOData(Buffer::VBOType::VERTEX, vertices, sizeof(vertices), Buffer::DataMode::STATIC);
-	m_axesBuffer.SetVBOData(Buffer::VBOType::COLOR, colors, sizeof(colors), Buffer::DataMode::STATIC);
-
+	m_axesBuffer.SetVBOData(Buffer::VERTEX_VBO, vertices, sizeof(vertices), Buffer::STATIC);
+	m_axesBuffer.SetVBOData(Buffer::COLOR_VBO, colors, sizeof(colors), Buffer::STATIC);
 }
 
 void Grid::DrawGrid()

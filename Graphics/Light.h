@@ -10,17 +10,22 @@ class Light
 {
 public:
 
+	enum LightType { DIRECTIONAL = 1, POINT = 2 };
+
+public:
+
 	Light();
+	virtual ~Light() = 0 {};
 
 public:
 
-	void Create();
-	void Destroy();
+	virtual void Create() = 0;
+	virtual void Destroy() = 0;
 
 public:
 
-	void Update(float deltaTime);
-	void Draw();
+	virtual void Update(float deltaTime) = 0;
+	virtual void Draw() = 0;
 
 public:
 
@@ -33,14 +38,24 @@ public:
 	void SetSpecular(float r, float g, float b);
 
 	void SetAttenuation(float attenuationConst, float attenuationLinear, float attenuationQuad);
+	void SetPosition(float x, float y, float z);
 
 public:
 
+	bool& IsActive();
+
 	void SendToShader();
 
-private:
+protected:
+
+	static GLuint s_totalLights;
+
+protected:
 
 	bool m_isDirty;
+	bool m_isActive; 
+
+	GLuint m_lightID;
 
 	glm::vec3 m_color;
 	glm::vec3 m_ambient;
@@ -51,8 +66,8 @@ private:
 	GLfloat m_attenuationLinear;
 	GLfloat m_attenuationQuad;
 
-	Buffer m_buffer;
 	Transform m_transform;
+	LightType m_lightType;
 };
 
 #endif

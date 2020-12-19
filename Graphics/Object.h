@@ -1,11 +1,11 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "Buffer.h"
 #include "Material.h"
 #include "Texture.h"
 #include "Transform.h"
 
+#include <stack>
 #include <glm.hpp>
 
 class Object
@@ -22,28 +22,35 @@ public:
 	virtual void Draw() = 0;
 	virtual void Destroy() = 0;
 
-protected:
+public:
 
-	void SendToShader();
+	static void SetIdentity();
+	static void SetMatrix(const glm::mat4& matrix);
+	static void PushMatrix();
+	static void PopMatrix();
+	static void SendToShader(bool isLit, bool isTextured);
+
+	static void Rotate(float pitch, float yaw, float roll);
+	static void Translate(float x, float y, float z);
+	static void Scale(float width, float height, float depth);
 
 public:
 
-	void Rotate(float pitch, float yaw, float roll);
-	void Translate(float x, float y, float z);
-	void Scale(float width, float height, float depth);
+	Transform& GetTransform();
 
-	Material& GetMaterial();
+private:
+
+	static std::stack<glm::mat4>s_modelMatrix;
+	static std::stack<glm::mat3>s_normalMatrix;
 
 protected:
 
 	std::string m_tag;
 
+	bool m_isActive;
 	bool m_isLit;
 	bool m_isTextured;
 
-	Buffer m_buffer;
-	Texture m_texture;
-	Material m_material;
 	Transform m_transform;
 
 };

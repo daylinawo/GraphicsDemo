@@ -4,9 +4,6 @@
 
 #include <iostream>
 
-const float ZOOM_OUT_MAX = 90.0f;
-const float ZOOM_IN_MAX = 1.0f;
-
 Screen* Screen::Instance()
 {
 	static Screen* screenObject = new Screen();
@@ -15,133 +12,50 @@ Screen* Screen::Instance()
 
 Screen::Screen()
 {
-	m_width = NULL;
-	m_height = NULL;
-	
-	m_fov = 0.0f;
-	m_nearClip = 0.0f;
-	m_farClip = 0.0f;
+	m_width = 0;
+	m_height = 0;
 
 	m_window = nullptr;
 	m_context = nullptr;
 	m_isOutlineMode = false;
 	m_projection = glm::mat4(1.0f);
 }
-
-void Screen::ClearBuffer()
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-void Screen::SwapBuffer()
-{
-	SDL_GL_SwapWindow(m_window);
-}
-
-void Screen::SetOutlineMode(bool flag)
-{
-	switch (flag)
-	{
-		case true:
-		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			m_isOutlineMode = true;
-			break;
-		}
-		case false:
-		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			m_isOutlineMode = false;
-			break;
-		}
-	}
-}
-
+//*******************************************************************
+// creates a 2D orthogonal projection
+//*******************************************************************
 void Screen::SetScreen2D()
 {
 	//turn off depth test as we do not need this to render in 2D
 	glDisable(GL_DEPTH_TEST);
 
-	//get uniform from shader and add to map
-	Pipeline::Instance()->BindUniform("projection");
-
 	//create projection matrix
-	m_projection = glm::ortho(0.0f, (float)m_width, (float)m_height, 0.0f);
+	m_projection = glm::ortho(0.0f, (float)m_width, 0.0f, (float)m_height);
 
-	//send data to the projection uniform in shader
+	//send projection matrix to shader
 	Pipeline::Instance()->SendUniformData("projection", m_projection);
 }
-
-void Screen::SetScreen3D(float fov, float nearClip, float farClip)
+//*******************************************************************
+// creates a 3D perspective projection
+//*******************************************************************
+void Screen::SetScreen3D(GLfloat fov, GLfloat nearClip, GLfloat farClip)
 {
-	m_fov = fov;
-	m_nearClip = nearClip;
-	m_farClip = farClip;
-
 	//turn on depth testing so objects are rendered in the correct order
 	glEnable(GL_DEPTH_TEST);
 
 	//hide cursor
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 
-	//get uniform from shader and add to map
-	Pipeline::Instance()->BindUniform("projection");
-
 	//create projection matrix
 	m_projection = glm::perspective(glm::radians(fov), (GLfloat)m_width / (GLfloat)m_height, nearClip, farClip);
 
-	//send data to the projection uniform in shader
-	Pipeline::Instance()->SendUniformData("projection", m_projection);
-	
-}
-
-void Screen::SetZoom(float amount)
-{
-	float zoomOutMax = ZOOM_OUT_MAX;
-	float zoomInMax = ZOOM_IN_MAX;
-
-	m_fov = m_fov - amount;
-
-	if (m_fov > zoomOutMax)
-		m_fov = zoomOutMax;
-	else if (m_fov < zoomInMax)
-		m_fov = zoomInMax;
-
-	//create projection matrix
-	m_projection = glm::perspective(glm::radians(m_fov), (GLfloat)m_width / (GLfloat)m_height, m_nearClip, m_farClip);
-
-	//send data to the projection uniform in shader
+	//send projection matrix to shader
 	Pipeline::Instance()->SendUniformData("projection", m_projection);
 }
-
-bool Screen::IsOutlineMode()
-{	
-	return m_isOutlineMode;
-}
-
-void Screen::SetScreenColor(float r, float g, float b, float a)
+//*******************************************************************
+// creates an SDL window with OpenGL context
+//*******************************************************************
+bool Screen::Initialize(const std::string& windowName, int width, int height, bool fullscreen, bool coreMode)
 {
-	glClearColor(r, g, b, a);
-}
-
-int Screen::GetWidth()
-{
-	return m_width;
-}
-
-int Screen::GetHeight()
-{
-	return m_height;
-}
-
-void Screen::ResizeWindow(int width, int height)
-{
-	glViewport(0, 0, m_width, m_height);
-}
-
-bool Screen::Initialize(const std::string& windowName, int width, int height,
-						bool fullscreen, bool coreMode, bool openGLScreen)
-{	
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) == -1)
 	{
@@ -165,34 +79,18 @@ bool Screen::Initialize(const std::string& windowName, int width, int height,
 	//set a compatibility OpenGL context
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, mode);
 
+	//set major and minor version of OpenGL context
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
-	if (!SetupWindow(windowName, width, height, fullscreen, openGLScreen))
-	{
-		return false;
-	}
+	Uint32 screenFlag = SDL_WINDOW_OPENGL;
 
-	if (!gladLoadGL())
-	{
-		std::cout << "Could not load glad." << std::endl;
-	}
+	screenFlag |= (fullscreen) ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_RESIZABLE;
 
-	return true;
-}
-
-bool Screen::SetupWindow(const std::string& windowTitle, int width, 
-						 int height, bool fullscreen, bool openGLScreen)
-{
-	Uint32 screenFlag;
-	
-	screenFlag = (fullscreen) ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_RESIZABLE;
-	screenFlag |= (openGLScreen) ? SDL_WINDOW_OPENGL : 0;
-
-	m_window = SDL_CreateWindow(windowTitle.c_str(),
+	m_window = SDL_CreateWindow(windowName.c_str(),
 								SDL_WINDOWPOS_CENTERED,
 								SDL_WINDOWPOS_CENTERED,
-								width, height, 
+								width, height,
 								screenFlag);
 
 	if (!m_window)
@@ -209,18 +107,31 @@ bool Screen::SetupWindow(const std::string& windowTitle, int width,
 		return false;
 	}
 
+	if (!gladLoadGL())
+	{
+		std::cout << "Could not load glad." << std::endl;
+		return false;
+	}
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	m_width = width;
 	m_height = height;
 
 	return true;
 }
-
+//*******************************************************************
+// displays the supported OpenGL hardware
+//*******************************************************************
 void Screen::DisplayProfile()
 {
 	std::cout << reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION)) << std::endl;
 	std::cout << reinterpret_cast<const char*>(glGetString(GL_VERSION)) << std::endl;
 }
-
+//*******************************************************************
+// displays list of supported openGL extensions
+//*******************************************************************
 void Screen::DisplayExtensions()
 {
 	GLint totalExtensions;
@@ -229,10 +140,75 @@ void Screen::DisplayExtensions()
 	for (GLint i = 0; i < totalExtensions; i++)
 	{
 		std::cout << "Extension #" << i << " : "
-				  << reinterpret_cast<const char*>(glGetStringi(GL_EXTENSIONS, i)) << std::endl;
+			<< reinterpret_cast<const char*>(glGetStringi(GL_EXTENSIONS, i)) << std::endl;
 	}
 }
-
+//*******************************************************************
+// clears frame buffer
+//*******************************************************************
+void Screen::ClearBuffer()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+//*******************************************************************
+// swaps frame buffer if double buffer is supported
+//*******************************************************************
+void Screen::SwapBuffer()
+{
+	SDL_GL_SwapWindow(m_window);
+}
+//*******************************************************************
+// toggles outline mode on and off
+//*******************************************************************
+void Screen::SetOutlineMode(bool flag)
+{
+	switch (flag)
+	{
+	case true:
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		m_isOutlineMode = true;
+		break;
+	}
+	case false:
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		m_isOutlineMode = false;
+		break;
+	}
+	}
+}
+//*******************************************************************
+// sets rgba values that GLclear uses to clear the color buffers
+//*******************************************************************
+void Screen::SetScreenColor(float r, float g, float b, float a)
+{
+	glClearColor(r, g, b, a);
+}
+//*******************************************************************
+// returns screen resolution
+//*******************************************************************
+glm::vec2 Screen::GetResolution()
+{
+	return glm::vec2(m_width, m_height);
+}
+//*******************************************************************
+// sets viewport resolution
+//*******************************************************************
+void Screen::ResizeWindow(int width, int height)
+{
+	glViewport(0, 0, m_width, m_height);
+}
+//*******************************************************************
+// returns a boolean of the state of outline mode
+//*******************************************************************
+bool Screen::IsOutlineMode()
+{	
+	return m_isOutlineMode;
+}
+//*******************************************************************
+// shuts down SDL, openGL and destroys window
+//*******************************************************************
 void Screen::Shutdown()
 {
 	//free OpenGL context

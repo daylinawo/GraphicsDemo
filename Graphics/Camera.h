@@ -26,6 +26,14 @@ public:
 	void MoveBackwards();
 
 public:
+	
+	virtual void Update(float deltaTime) = 0;
+	virtual void Draw(bool isSkybox = false) = 0;
+
+public:
+
+	const glm::mat4& GetMatrix();
+	const Transform& GetTransform();
 
 	void SetSpeed(float speed);
 	void SetSensitivity(float sensitivity);
@@ -34,8 +42,7 @@ public:
 
 protected:
 
-	virtual void Update(float deltaTime) = 0;
-	virtual void HandleInput() = 0;
+	virtual bool HandleInput() = 0;
 
 protected:
 
@@ -45,11 +52,10 @@ protected:
 	glm::vec3 m_up;
 	glm::vec3 m_right;
 	glm::vec3 m_forward;
-	glm::vec3 m_worldUp;
 	glm::vec3 m_direction;
 
-	Transform m_transform;
 	glm::mat4 m_view;
+	Transform m_transform;
 
 };
 

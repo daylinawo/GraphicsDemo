@@ -9,26 +9,32 @@ class Pipeline
 {
 public:
 
-	static Pipeline* Instance();
-	enum class ShaderType { VERTEX, FRAGMENT };
-	
+	struct ShaderID
+	{
+		GLuint programID;
+		GLuint vertexID;
+		GLuint fragmentID;
+		std::map<std::string, GLuint> uniforms;
+	};
+
 public:
 
-	bool CreateProgram();
-	bool CreateShaders();
+	static Pipeline* Instance();
+	enum class ShaderType { VERTEX, FRAGMENT };	
 
-	bool CompileShaders(const std::string& filename, ShaderType type);
-	void AttachShaders();
-	bool LinkProgram();
+public:
 
+	bool CreateShaderID(const std::string& vertexFile, const std::string& fragmentFile, const std::string& shaderID);
 	void DetachShaders();
 	void DestroyShaders();
 	void DestroyProgram();
+	bool UseShader(const std::string& shaderID);
 
 public:
 
 	bool BindAttribute(const std::string& attribute);
 	bool BindUniform(const std::string& uniform);
+	void BindUniforms();
 
 	GLuint GetProgramID();
 	GLuint GetAttributeID(const std::string& attribute);
@@ -49,6 +55,13 @@ public:
 	void SendUniformData(const std::string& uniform, const glm::mat3& mat3Data, bool transpose = false);
 
 private:
+	bool CreateProgram(GLuint& shaderProgramID);
+	bool CreateShaders(GLuint& vertexShaderID, GLuint& fragmentShaderID);
+	bool CompileShaders(const std::string& filename, GLuint shaderID);
+	bool LinkProgram(GLuint shaderProgramID, GLuint vertexShaderID, GLuint fragmentShaderID);
+	void AttachShaders(GLuint shaderProgramID, GLuint vertexShaderID, GLuint fragmentShaderID);
+
+private:
 	
 	Pipeline();
 	Pipeline(const Pipeline&);
@@ -56,12 +69,10 @@ private:
 
 private:
 
-	GLuint m_shaderProgramID;
-	GLuint m_vertexShaderID;
-	GLuint m_fragmentShaderID;
+	ShaderID* m_shaderID;
 
 	std::map<std::string, GLuint> m_attributes;
-	std::map<std::string, GLuint> m_uniforms;
+	std::map<std::string, ShaderID> m_shaders;
 
 };
 

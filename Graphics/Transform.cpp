@@ -25,17 +25,17 @@ const glm::mat4& Transform::GetMatrix()
 	return m_transform;
 }
 
-const glm::vec3& Transform::GetPosition()
+const glm::vec3& Transform::GetPosition() const
 {
 	return m_position;
 }
 
-const glm::vec3& Transform::GetRotation()
+const glm::vec3& Transform::GetRotation() const
 {
 	return m_rotation;
 }
 
-const glm::vec3& Transform::GetScale()
+const glm::vec3& Transform::GetScale() const
 {
 	return m_scale;
 }

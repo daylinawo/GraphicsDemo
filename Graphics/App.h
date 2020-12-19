@@ -1,15 +1,19 @@
 #ifndef APP_H
 #define APP_H
 
-#include "Cube.h"
-#include "Grid.h"
-#include "Quad.h"
+#include "Crate.h"
+#include "LightManager.h"
+#include "Room.h"
 #include "FPSCamera.h"
+#include "Grid.h"
+#include "HUD.h"
+#include "MetalBox.h"
+#include "Laptop.h"
 #include "OrthoCamera.h"
-#include "Light.h"
 #include "Skybox.h"
 
 #include <vector>
+#include <map>
 
 class App
 {
@@ -37,16 +41,17 @@ private:
 	int m_lastTime;
 	bool m_isRunning;
 
+	HUD* m_HUD;
+	FPSCamera* m_mainCam;
+	OrthoCamera* m_UICam;
+
 	Grid* m_grid;
-	Light* m_light;
+	Room* m_room;
 	Skybox* m_skybox;
-
-	Quad* m_floor;
-	std::vector<Cube*> m_boxes;
-
-	FPSCamera* m_3Dcamera;
-	OrthoCamera* m_2DCamera;
-
+	Laptop* m_laptop;
+	MetalBox* m_metalBox;
+	LightManager* m_lightManager;
+	std::vector<Crate*> m_crates;
 };
 
-#endif // !APP_H
+#endif

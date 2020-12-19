@@ -7,18 +7,6 @@ Material::Material()
 	m_ambient = glm::vec3(0.0f);
 	m_diffuse = glm::vec3(0.0f);
 	m_specular = glm::vec3(0.0f);
-
-	static bool isBound = false;
-
-	if (!isBound)
-	{
-		Pipeline::Instance()->BindUniform("material.ambient");
-		Pipeline::Instance()->BindUniform("material.diffuse");
-		Pipeline::Instance()->BindUniform("material.specular");
-		Pipeline::Instance()->BindUniform("material.shininess");
-
-		isBound = true;
-	}
 }
 
 void Material::SetShininess(float shininess)
@@ -70,7 +58,6 @@ void Material::SetSpecular(float r, float g, float b)
 	m_specular.g = g;
 	m_specular.b = b;
 }
-
 
 void Material::SendToShader()
 {
